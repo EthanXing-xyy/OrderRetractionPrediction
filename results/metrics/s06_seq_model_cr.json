@@ -1,0 +1,73 @@
+{
+ "variant": "transformer_cr",
+ "n_params_m": 9.22,
+ "batch": 32,
+ "seq_len": 256,
+ "epochs": 3,
+ "lr": 0.0003,
+ "n_cat_field": 22,
+ "n_num_field": 11,
+ "n_block_train": 469357,
+ "amp": "bfloat16",
+ "train_max_mem_alloc_gib": 0.791,
+ "history": [
+  {
+   "epoch": 0,
+   "train_loss": null,
+   "elapsed_min": 32.7,
+   "val_loss": 0.7205698939548759,
+   "val_n": 1138561,
+   "val_auprc_rough": 0.5676324848486217,
+   "val_auroc_rough": 0.8164314040518978,
+   "val_pos_rate": 0.20237387368792714
+  },
+  {
+   "epoch": 1,
+   "train_loss": null,
+   "elapsed_min": 45.2,
+   "val_loss": 0.7123331856794651,
+   "val_n": 1138561,
+   "val_auprc_rough": 0.5772533037342827,
+   "val_auroc_rough": 0.8216983180882756,
+   "val_pos_rate": 0.20237387368792714
+  },
+  {
+   "epoch": 2,
+   "train_loss": null,
+   "elapsed_min": 26.9,
+   "val_loss": 0.708775142555317,
+   "val_n": 1138561,
+   "val_auprc_rough": 0.5786359706578077,
+   "val_auroc_rough": 0.8232875006308725,
+   "val_pos_rate": 0.20237387368792714
+  }
+ ],
+ "base_ratio_single": null,
+ "preds": {
+  "val": {
+   "n_pred": 5278124,
+   "path": "results\\preds\\transformer_cr_val.parquet"
+  },
+  "test": {
+   "n_pred": 5183024,
+   "path": "results\\preds\\transformer_cr_test.parquet"
+  }
+ },
+ "smoke": false,
+ "_env": {
+  "python": "3.11.0",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "cpu_count": 20,
+  "utc": "2026-09-21T13:50:03Z",
+  "numpy": "2.4.6",
+  "pandas": "3.0.6",
+  "pyarrow": "25.0.1",
+  "sklearn": "1.9.1",
+  "lightgbm": "4.7.0",
+  "torch": "2.11.0+cu128",
+  "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "gpu_mem_gb": 6.0,
+  "git": "fa88267"
+ },
+ "_elapsed_s": 6410.8
+}

@@ -1,0 +1,13 @@
+
+==============================================================================
+[s07_compare_transformer_cr_vs_lgbm_single_test] 开始 2026-09-21 21:54:13  python=3.11.0  host-cores=20
+  读到 transformer_cr_test.parquet：5183024 行，带 p13_*
+  读到 lgbm_single_test.parquet：5183024 行，不带 p13_*
+
+[预注册主实验] transformer_cr vs lgbm_single @ test，指标=auprc，5183024 行 / 22331 位患者
+  bootstrap：1000 次 / 单位=subject_id / 22331 个患者 / 5183024 行 / 16 线程 / 实耗 98.4s
+  auprc(A)=0.580106  auprc(B)=0.563626
+  Δ=+0.016480  95% CI [+0.015615, +0.017384]  p_boot=0.0010  （真跑 1000 次）
+  判据：ΔAUPRC >= 0.01 且按 subject_id 重抽的 95% CI 不含 0
+  ★ 预注册判据：达成
+→ 指标已写 results\metrics\s07_compare_transformer_cr_vs_lgbm_single_test.json

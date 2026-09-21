@@ -215,3 +215,24 @@ train 块 469357（全量 469357）  每 epoch 14668 步
   ep2 step 12000/14668  loss=0.70284  lr=3.25e-05  8.84 step/s  已用 22.6 min
   ep2 step 12200/14668  loss=0.70598  lr=3.21e-05  8.88 step/s  已用 22.9 min
   ep2 step 12400/14668  loss=0.70404  lr=3.18e-05  8.92 step/s  已用 23.2 min
+  ep2 step 12600/14668  loss=0.71235  lr=3.15e-05  8.96 step/s  已用 23.4 min
+  ep2 step 12800/14668  loss=0.70937  lr=3.12e-05  9.00 step/s  已用 23.7 min
+  ep2 step 13000/14668  loss=0.70616  lr=3.10e-05  9.03 step/s  已用 24.0 min
+  ep2 step 13200/14668  loss=0.70871  lr=3.08e-05  9.07 step/s  已用 24.3 min
+  ep2 step 13400/14668  loss=0.71034  lr=3.06e-05  9.10 step/s  已用 24.5 min
+  ep2 step 13600/14668  loss=0.70584  lr=3.04e-05  9.14 step/s  已用 24.8 min
+  ep2 step 13800/14668  loss=0.71095  lr=3.03e-05  9.13 step/s  已用 25.2 min
+  ep2 step 14000/14668  loss=0.70196  lr=3.02e-05  9.16 step/s  已用 25.5 min
+  ep2 step 14200/14668  loss=0.71315  lr=3.01e-05  9.17 step/s  已用 25.8 min
+  ep2 step 14400/14668  loss=0.70774  lr=3.00e-05  9.12 step/s  已用 26.3 min
+  ep2 step 14600/14668  loss=0.70609  lr=3.00e-05  9.14 step/s  已用 26.6 min
+[epoch 2] 用时 26.9 min  val={'loss': 0.708775142555317, 'n': 1138561, 'auprc_rough': 0.5786359706578077, 'auroc_rough': 0.8232875006308725, 'pos_rate': 0.20237387368792714}
+[预测] 读 labels.in_cohort 建查表 …
+  val: 非 padding 位置 5285694
+  val: in_cohort 位置 5278124（契约 §7 只在 in_cohort 上出预测）
+→ 预测已写 H:\AIAUTORESEARCH\Project\results\preds\transformer_cr_val.parquet（5278124 行）
+  test: 非 padding 位置 5190668
+  test: in_cohort 位置 5183024（契约 §7 只在 in_cohort 上出预测）
+→ 预测已写 H:\AIAUTORESEARCH\Project\results\preds\transformer_cr_test.parquet（5183024 行）
+→ 指标已写 results\metrics\s06_seq_model_cr.json
+[完成] 用时 106.8 min

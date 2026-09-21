@@ -1,0 +1,216 @@
+{
+ "taus": [
+  24.0
+ ],
+ "horizon_h": 24.0,
+ "smoke": true,
+ "protocol_not_given_excluded": [
+  "Not Given per Sliding Scale",
+  "Not Given per Sliding Scale in Other Location"
+ ],
+ "per_tau": {
+  "24.0": {
+   "NotGiven对自撤占比的影响": {
+    "ADT orders": {
+     "n_有NotGiven": 0,
+     "自撤占比pct": null,
+     "n_无NotGiven": 9121,
+     "对照自撤占比pct": 15.3,
+     "Δpp": null
+    },
+    "Blood Bank": {
+     "n_有NotGiven": 0,
+     "自撤占比pct": null,
+     "n_无NotGiven": 6437,
+     "对照自撤占比pct": 14.29,
+     "Δpp": null
+    },
+    "Cardiology": {
+     "n_有NotGiven": 0,
+     "自撤占比pct": null,
+     "n_无NotGiven": 3459,
+     "对照自撤占比pct": 25.0,
+     "Δpp": null
+    },
+    "Consults": {
+     "n_有NotGiven": 0,
+     "自撤占比pct": null,
+     "n_无NotGiven": 6169,
+     "对照自撤占比pct": 46.15,
+     "Δpp": null
+    },
+    "General Care": {
+     "n_有NotGiven": 0,
+     "自撤占比pct": null,
+     "n_无NotGiven": 53930,
+     "对照自撤占比pct": 32.77,
+     "Δpp": null
+    },
+    "IV therapy": {
+     "n_有NotGiven": 35,
+     "自撤占比pct": 0.0,
+     "n_无NotGiven": 20987,
+     "对照自撤占比pct": 21.71,
+     "Δpp": -21.71
+    },
+    "Lab": {
+     "n_有NotGiven": 0,
+     "自撤占比pct": null,
+     "n_无NotGiven": 72283,
+     "对照自撤占比pct": 30.8,
+     "Δpp": null
+    },
+    "Medications": {
+     "n_有NotGiven": 5743,
+     "自撤占比pct": 24.11,
+     "n_无NotGiven": 163756,
+     "对照自撤占比pct": 23.78,
+     "Δpp": 0.33
+    },
+    "Nutrition": {
+     "n_有NotGiven": 0,
+     "自撤占比pct": null,
+     "n_无NotGiven": 12432,
+     "对照自撤占比pct": 28.63,
+     "Δpp": null
+    },
+    "Radiology": {
+     "n_有NotGiven": 0,
+     "自撤占比pct": null,
+     "n_无NotGiven": 15178,
+     "对照自撤占比pct": 41.98,
+     "Δpp": null
+    },
+    "Respiratory": {
+     "n_有NotGiven": 0,
+     "自撤占比pct": null,
+     "n_无NotGiven": 3489,
+     "对照自撤占比pct": 12.6,
+     "Δpp": null
+    }
+   },
+   "lgbmB24_single_noemar": {
+    "n_train": 308471,
+    "n_test": 37464,
+    "best_iter": 41,
+    "seconds": 6,
+    "auprc": 0.328248,
+    "auroc": 0.834464,
+    "brier": 0.03066
+   },
+   "lgbmB24_3class_noemar": {
+    "n_train": 308471,
+    "n_test": 37464,
+    "best_iter": 35,
+    "seconds": 10,
+    "auprc": 0.322947,
+    "auroc": 0.830761,
+    "brier": 0.030759,
+    "auprc_self": 0.22204,
+    "auprc_other": 0.210072
+   },
+   "lgbmB24_single": {
+    "n_train": 308471,
+    "n_test": 37464,
+    "best_iter": 40,
+    "seconds": 6,
+    "auprc": 0.345827,
+    "auroc": 0.845978,
+    "brier": 0.030262
+   },
+   "lgbmB24_3class": {
+    "n_train": 308471,
+    "n_test": 37464,
+    "best_iter": 31,
+    "seconds": 11,
+    "auprc": 0.345384,
+    "auroc": 0.840999,
+    "brier": 0.030316,
+    "auprc_self": 0.225454,
+    "auprc_other": 0.23067
+   },
+   "Δ_eMAR的贡献(单头)": {
+    "delta": 0.017579,
+    "ci_lo": 0.004479,
+    "ci_hi": 0.029458,
+    "p_boot": 0.004,
+    "n_boot": 1000,
+    "n_boot_requested": 1000,
+    "n_subjects": 187,
+    "n_rows": 37464,
+    "metric": "auprc",
+    "bootstrap_unit": "subject_id",
+    "value_a": 0.345827,
+    "value_b": 0.328248,
+    "boot_sd": 0.006377,
+    "n_boot_nonfinite": 0,
+    "elapsed_s": 4.4
+   },
+   "Δ_eMAR的贡献(三分类)": {
+    "delta": 0.022437,
+    "ci_lo": 0.008816,
+    "ci_hi": 0.036074,
+    "p_boot": 0.001,
+    "n_boot": 1000,
+    "n_boot_requested": 1000,
+    "n_subjects": 187,
+    "n_rows": 37464,
+    "metric": "auprc",
+    "bootstrap_unit": "subject_id",
+    "value_a": 0.345384,
+    "value_b": 0.322947,
+    "boot_sd": 0.00703,
+    "n_boot_nonfinite": 0,
+    "elapsed_s": 0.2
+   },
+   "Δ_分头vs单头(有eMAR)": {
+    "delta": -0.000443,
+    "ci_lo": -0.008719,
+    "ci_hi": 0.007441,
+    "p_boot": 0.914,
+    "n_boot": 1000,
+    "n_boot_requested": 1000,
+    "n_subjects": 187,
+    "n_rows": 37464,
+    "metric": "auprc",
+    "bootstrap_unit": "subject_id",
+    "value_a": 0.345384,
+    "value_b": 0.345827,
+    "boot_sd": 0.004126,
+    "n_boot_nonfinite": 0,
+    "elapsed_s": 0.2
+   },
+   "Δ_分头vs单头(无eMAR)": {
+    "delta": -0.005301,
+    "ci_lo": -0.013373,
+    "ci_hi": 0.003592,
+    "p_boot": 0.246,
+    "n_boot": 1000,
+    "n_boot_requested": 1000,
+    "n_subjects": 187,
+    "n_rows": 37464,
+    "metric": "auprc",
+    "bootstrap_unit": "subject_id",
+    "value_a": 0.322947,
+    "value_b": 0.328248,
+    "boot_sd": 0.004339,
+    "n_boot_nonfinite": 0,
+    "elapsed_s": 0.2
+   }
+  }
+ },
+ "_env": {
+  "python": "3.11.0",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "cpu_count": 20,
+  "utc": "2026-09-21T13:48:22Z",
+  "numpy": "2.4.6",
+  "pandas": "3.0.6",
+  "pyarrow": "25.0.1",
+  "sklearn": "1.9.1",
+  "lightgbm": "4.7.0",
+  "torch": "2.11.0+cu128",
+  "git": "fa88267"
+ },
+ "_elapsed_s": 226.8
+}

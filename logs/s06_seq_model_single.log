@@ -1,0 +1,24 @@
+
+==============================================================================
+[s06_seq_model_single] 开始 2026-09-21 21:50:11  python=3.11.0  host-cores=20
+变体=transformer_single  device=cuda  batch=32  epochs=3  lr=0.0003  amp=torch.bfloat16
+seq_len=256  n_cat=22  n_num=11  词表合计=10810
+参数量 9.22 M（其中 embedding 2.90 M）
+train 块 469357（全量 469357）  每 epoch 14668 步
+  ep0 step 200/14668  loss=0.47267  lr=1.21e-04  9.60 step/s  已用 0.3 min
+  ep0 step 400/14668  loss=0.41803  lr=2.41e-04  10.74 step/s  已用 0.6 min
+  ep0 step 600/14668  loss=0.40824  lr=3.00e-04  11.18 step/s  已用 0.9 min
+  ep0 step 800/14668  loss=0.40646  lr=3.00e-04  11.36 step/s  已用 1.2 min
+  ep0 step 1000/14668  loss=0.40314  lr=3.00e-04  11.08 step/s  已用 1.5 min
+  ep0 step 1200/14668  loss=0.39725  lr=3.00e-04  10.51 step/s  已用 1.9 min
+  ep0 step 1400/14668  loss=0.39465  lr=3.00e-04  10.07 step/s  已用 2.3 min
+  ep0 step 1600/14668  loss=0.39271  lr=3.00e-04  9.57 step/s  已用 2.8 min
+  ep0 step 1800/14668  loss=0.39175  lr=2.99e-04  9.26 step/s  已用 3.2 min
+  ep0 step 2000/14668  loss=0.39234  lr=2.99e-04  9.01 step/s  已用 3.7 min
+  ep0 step 2200/14668  loss=0.38937  lr=2.99e-04  8.82 step/s  已用 4.2 min
+  ep0 step 2400/14668  loss=0.39226  lr=2.99e-04  8.67 step/s  已用 4.6 min
+  ep0 step 2600/14668  loss=0.39001  lr=2.98e-04  8.45 step/s  已用 5.1 min
+  ep0 step 2800/14668  loss=0.38956  lr=2.98e-04  8.15 step/s  已用 5.7 min
+  ep0 step 3000/14668  loss=0.39137  lr=2.98e-04  8.01 step/s  已用 6.2 min
+  ep0 step 3200/14668  loss=0.38938  lr=2.97e-04  7.87 step/s  已用 6.8 min
+  ep0 step 3400/14668  loss=0.38755  lr=2.97e-04  7.76 step/s  已用 7.3 min

@@ -219,25 +219,39 @@ def main():
             print(f"    {k:18s} Δ={v['Δpp']} pp  (有 {v['n_有NotGiven']} / 无 {v['n_无NotGiven']})")
 
         # ---- 组装训练矩阵 ----
-        X_static = {c: C.col_np(FEA, c, fill=-1) for c in fcols}
+        # ⚠ 不要为全部 5221 万行建矩阵：37 列 × float32 = 7.7 GB，本机必崩（smoke 靠换页才活下来）。
+        #   先把 tr/va/te 三个行集合（含训练抽样上限）定下来，**只为这些行建矩阵**。
+        tr = alive & (split == 0)
+        if tr.sum() > a.max_train:          # 按患者抽样，不按行，避免同一患者跨训练/验证
+            step = int(np.ceil(tr.sum() / a.max_train))
+            tr = tr & ((subj % step) == 0)
+        va, te = alive & (split == 1), alive & (split == 2)
+        need = tr | va | te
+        idx_need = np.flatnonzero(need)
+        pos = np.full(len(need), -1, np.int64)
+        pos[idx_need] = np.arange(len(idx_need))
+        tr_i, va_i, te_i = (pos[np.flatnonzero(tr)], pos[np.flatnonzero(va)],
+                            pos[np.flatnonzero(te)])
+        print(f"  训练 {len(tr_i):,} / 验证 {len(va_i):,} / 测试 {len(te_i):,} 行"
+              f"（矩阵只建这 {len(idx_need):,} 行）")
+
         ecols = ["e_n_events", "e_n_administered", "e_n_not_given", "e_n_late",
                  "e_has_not_given", "e_last_event", "e_late_ratio"]
         res_tau = report["per_tau"][str(tau)]
+        res_tau["n_train"], res_tau["n_test"] = len(tr_i), len(te_i)
         for use_emar in (False, True):
             cols = fcols + (ecols if use_emar else [])
             cats = CATS + (["e_last_event"] if use_emar else [])
             suffix = "" if use_emar else "_noemar"
-            Xall = np.column_stack([(X_static[c] if c in X_static else ef[c]).astype(np.float32)
-                                    for c in cols])
+            Xall = np.empty((len(idx_need), len(cols)), np.float32)
+            for j, c in enumerate(cols):          # 逐列读、逐列子集化，峰值只多一列
+                src = ef[c] if c in ef else C.col_np(FEA, c, fill=-1)
+                Xall[:, j] = src[idx_need]
+                if c not in ef:
+                    del src
             for head in ("single", "3class"):
                 name = f"lgbmB{int(tau)}_{head}{suffix}"
                 t1 = time.time()
-                tr = alive & (split == 0)
-                if tr.sum() > a.max_train:      # 按患者抽样，不按行，避免同患者跨训练/验证
-                    thin = (C.col_np(LAB, "subject_id").astype(np.int64) %
-                            int(np.ceil(tr.sum() / a.max_train))) == 0
-                    tr = tr & thin
-                va, te = alive & (split == 1), alive & (split == 2)
                 ytr = (y_b if head == "single" else cb)
                 params = dict(num_leaves=cf["lgbm"]["num_leaves"],
                               learning_rate=cf["lgbm"]["learning_rate"],
@@ -246,13 +260,13 @@ def main():
                               num_threads=cf["lgbm"]["num_threads"], verbose=-1,
                               objective="binary" if head == "single" else "multiclass",
                               **({} if head == "single" else {"num_class": 3}))
-                dtr = lgb.Dataset(Xall[tr], label=ytr[tr].astype(np.int32),
+                dtr = lgb.Dataset(Xall[tr_i], label=ytr[tr].astype(np.int32),
                                   feature_name=cols, categorical_feature=cats)
-                dva = lgb.Dataset(Xall[va], label=ytr[va].astype(np.int32), reference=dtr)
+                dva = lgb.Dataset(Xall[va_i], label=ytr[va].astype(np.int32), reference=dtr)
                 bst = lgb.train(params, dtr, num_boost_round=400,
                                 valid_sets=[dva],
                                 callbacks=[lgb.early_stopping(50, verbose=False)])
-                pt = bst.predict(Xall[te], num_iteration=bst.best_iteration)
+                pt = bst.predict(Xall[te_i], num_iteration=bst.best_iteration)
                 p_disc = pt if head == "single" else (1.0 - pt[:, 0])
                 m = {"n_train": int(tr.sum()), "n_test": int(te.sum()),
                      "best_iter": int(bst.best_iteration), "seconds": round(time.time() - t1),
@@ -269,7 +283,7 @@ def main():
                 bst.save_model(str(C.ROOT / "checkpoints" / f"{name}.txt"))
                 del dtr, dva, bst
             del Xall
-        del X_static
+
 
         # ---- 两个对照的 bootstrap ----
         te = alive & (split == 2)
