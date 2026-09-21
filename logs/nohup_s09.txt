@@ -1,0 +1,11 @@
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN

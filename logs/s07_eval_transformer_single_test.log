@@ -1,0 +1,12 @@
+
+==============================================================================
+[s07_eval_transformer_single_test] 开始 2026-09-21 22:57:26  python=3.11.0  host-cores=20
+  读到 transformer_single_test.parquet：5183024 行，不带 p13_*
+
+[transformer_single / test] 队列内 5183024 行、22331 位患者、正类率 20.35%
+  AUROC=0.826601  AUPRC=0.600912（随机线 0.20348）
+  AUPRC_self=0.207472  AUPRC_other=0.402478（排除 cause=3 的 12003 行）
+  Brier=0.118659  ECE(等宽10桶)=0.003847  ECE(等频)=0.0038
+  C-index(td)：self=0.735644 other=0.800715 加权=0.766542（各抽 2000000 对，可比 1806218/1633069）
+  AUPRC@24h=0.409025（随机线 0.139672）
+→ 指标已写 results\metrics\s07_eval_transformer_single_test.json
