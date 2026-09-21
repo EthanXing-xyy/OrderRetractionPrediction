@@ -1,0 +1,13 @@
+
+==============================================================================
+[s07_compare_lgbm_dual_nc3_vs_lgbm_single_nc3_test] 开始 2026-09-21 21:35:58  python=3.11.0  host-cores=20
+  读到 lgbm_dual_nc3_test.parquet：5171021 行，不带 p13_*
+  读到 lgbm_single_nc3_test.parquet：5171021 行，不带 p13_*
+
+[预注册主实验] lgbm_dual_nc3 vs lgbm_single_nc3 @ test，指标=auprc，5171021 行 / 22331 位患者
+  bootstrap：1000 次 / 单位=subject_id / 22331 个患者 / 5171021 行 / 16 线程 / 实耗 85.8s
+  auprc(A)=0.557459  auprc(B)=0.560420
+  Δ=-0.002961  95% CI [-0.003321, -0.002641]  p_boot=0.0010  （真跑 1000 次）
+  判据：ΔAUPRC >= 0.01 且按 subject_id 重抽的 95% CI 不含 0
+  ★ 预注册判据：未达成（Δ=-0.0030 < 阈值 0.01）
+→ 指标已写 results\metrics\s07_compare_lgbm_dual_nc3_vs_lgbm_single_nc3_test.json

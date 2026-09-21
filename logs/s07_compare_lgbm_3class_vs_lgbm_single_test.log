@@ -1,0 +1,13 @@
+
+==============================================================================
+[s07_compare_lgbm_3class_vs_lgbm_single_test] 开始 2026-09-21 21:34:10  python=3.11.0  host-cores=20
+  读到 lgbm_3class_test.parquet：5183024 行，不带 p13_*
+  读到 lgbm_single_test.parquet：5183024 行，不带 p13_*
+
+[预注册主实验] lgbm_3class vs lgbm_single @ test，指标=auprc，5183024 行 / 22331 位患者
+  bootstrap：1000 次 / 单位=subject_id / 22331 个患者 / 5183024 行 / 16 线程 / 实耗 85.8s
+  auprc(A)=0.560739  auprc(B)=0.563626
+  Δ=-0.002886  95% CI [-0.003359, -0.002480]  p_boot=0.0010  （真跑 1000 次）
+  判据：ΔAUPRC >= 0.01 且按 subject_id 重抽的 95% CI 不含 0
+  ★ 预注册判据：未达成（Δ=-0.0029 < 阈值 0.01）
+→ 指标已写 results\metrics\s07_compare_lgbm_3class_vs_lgbm_single_test.json

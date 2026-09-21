@@ -1,65 +1,30 @@
 {
  "figures": [
   {
-   "file": "results/figures/F1_revocation_rate_by_order_type.png",
-   "note": "前10类+其它的撤销率，n 已标注；覆盖 n=52,133,098",
-   "status": "ok"
-  },
-  {
-   "file": "results/figures/F2_delay_distribution.png",
-   "note": "撤销时延对数直方图，n=10646493，p50=13.22h",
-   "status": "ok"
-  },
-  {
-   "file": "results/figures/F3_hazard_shape_self_vs_other.png",
-   "note": "自撤/他撤各自的时延桶分布（占各自总量%），n_self=4482544, n_other=6049516",
-   "status": "ok"
-  },
-  {
-   "file": "results/figures/F4_self_share_by_order_type.png",
-   "note": "16 个 order_type 的自撤占比（降序），n 已标注",
-   "status": "ok"
-  },
-  {
-   "file": "results/figures/F5_cohort_flow.png",
-   "note": "队列流：全部医嘱 n=52,212,109 → 最终 n=52,133,098",
-   "status": "ok"
-  },
-  {
    "file": "results/figures/F6_pr_curve.png",
-   "note": "results/preds/ 下没有任何模型的 test 预测文件（契约 §7），上游模型脚本还没产出预测",
-   "status": "skipped"
+   "note": "5 个模型的 PR 曲线：baserate, logreg, lgbm_single, lgbm_dual, lgbm_3class",
+   "status": "ok"
   },
   {
    "file": "results/figures/F7_calibration.png",
-   "note": "没有任何 results/metrics/s07_eval_*_test.json 含 reliability 字段",
-   "status": "skipped"
-  },
-  {
-   "file": "results/figures/F8_prereg_delta_auprc.png",
-   "note": "缺 results/metrics/s07_compare_lgbm_dual_vs_lgbm_single_test.json（预注册主实验还没跑）",
-   "status": "skipped"
-  },
-  {
-   "file": "results/figures/F9_feature_importance.png",
-   "note": "缺 results/metrics/s05_baseline.json",
-   "status": "skipped"
+   "note": "5 个模型的校准曲线：baserate, logreg, lgbm_single, lgbm_dual, lgbm_3class",
+   "status": "ok"
   }
  ],
- "n_ok": 5,
- "n_skipped_or_error": 4,
+ "n_ok": 2,
+ "n_skipped_or_error": 0,
  "_env": {
   "python": "3.11.0",
   "platform": "Windows-10-10.0.26200-SP0",
   "cpu_count": 20,
-  "utc": "2026-09-21T11:54:42Z",
+  "utc": "2026-09-21T13:43:23Z",
   "numpy": "2.4.6",
   "pandas": "3.0.6",
   "pyarrow": "25.0.1",
   "sklearn": "1.9.1",
   "lightgbm": "4.7.0",
   "torch": "2.11.0+cu128",
-  "git": "d662f68"
+  "git": "4d1c083"
  },
- "_elapsed_s": 5.5
+ "_elapsed_s": 31.4
 }

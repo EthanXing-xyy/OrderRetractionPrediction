@@ -1,0 +1,24 @@
+
+==============================================================================
+[s07_eval_baserate_test] 开始 2026-09-21 21:24:49  python=3.11.0  host-cores=20
+  读到 baserate_test.parquet：5183024 行，不带 p13_*
+
+[baserate / test] 队列内 5183024 行、22331 位患者、正类率 20.35%
+  AUROC=0.5  AUPRC=0.20348（随机线 0.20348）
+  AUPRC_self=0.086029  AUPRC_other=0.115603（排除 cause=3 的 12003 行）
+  Brier=0.162077  ECE(等宽10桶)=0.000741  ECE(等频)=0.000741
+  C-index(td)：self=0.5 other=0.5 加权=0.5（各抽 2000000 对，可比 1804604/1632500）
+  AUPRC@24h=0.139672（随机线 0.139672）
+→ 指标已写 results\metrics\s07_eval_baserate_test.json
+
+==============================================================================
+[s07_eval_baserate_test] 开始 2026-09-21 21:29:40  python=3.11.0  host-cores=20
+  读到 baserate_test.parquet：5183024 行，不带 p13_*
+
+[baserate / test] 队列内 5183024 行、22331 位患者、正类率 20.35%
+  AUROC=0.5  AUPRC=0.20348（随机线 0.20348）
+  AUPRC_self=0.086029  AUPRC_other=0.115603（排除 cause=3 的 12003 行）
+  Brier=0.162077  ECE(等宽10桶)=0.000741  ECE(等频)=0.000741
+  C-index(td)：self=0.5 other=0.5 加权=0.5（各抽 2000000 对，可比 1805375/1632949）
+  AUPRC@24h=0.139672（随机线 0.139672）
+→ 指标已写 results\metrics\s07_eval_baserate_test.json

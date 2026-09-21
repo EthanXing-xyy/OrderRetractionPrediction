@@ -1,0 +1,161 @@
+{
+ "model": "baserate",
+ "split": "test",
+ "n_rows": 5183024,
+ "n_subjects": 22331,
+ "n_pos": 1054643,
+ "prevalence": 0.20348,
+ "n_dropped_out_of_cohort": 0,
+ "contract_check": {
+  "n_rows": 5183024,
+  "n_key_duplicated": 0,
+  "n_p_disc_nan": 0,
+  "n_p_disc_out_of_range": 0,
+  "n_p_self_nan": 0,
+  "n_p_self_out_of_range": 0,
+  "n_p_other_nan": 0,
+  "n_p_other_out_of_range": 0,
+  "n_p_disc_24h_nan": 0,
+  "n_p_disc_24h_out_of_range": 0,
+  "has_p13": false,
+  "ok": true,
+  "violations": []
+ },
+ "auroc": 0.5,
+ "auprc": 0.20348,
+ "auprc_baserate": 0.20348,
+ "n_excluded_cause_unknown": 12003,
+ "auprc_self": 0.086029,
+ "n_pos_self": 444857,
+ "auprc_other": 0.115603,
+ "n_pos_other": 597783,
+ "brier": 0.162077,
+ "calibration_bins": 10,
+ "ece": 0.000741,
+ "ece_quantile": 0.000741,
+ "reliability": {
+  "strategy": "uniform",
+  "bin_edges": [
+   0.0,
+   0.1,
+   0.2,
+   0.3,
+   0.4,
+   0.5,
+   0.6,
+   0.7,
+   0.8,
+   0.9,
+   1.0
+  ],
+  "bin_center": [
+   0.05,
+   0.15,
+   0.25,
+   0.35,
+   0.45,
+   0.55,
+   0.65,
+   0.75,
+   0.85,
+   0.95
+  ],
+  "mean_pred": [
+   null,
+   null,
+   0.204221,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  "frac_pos": [
+   null,
+   null,
+   0.20348,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null,
+   null
+  ],
+  "count": [
+   0,
+   0,
+   5183024,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0,
+   0
+  ],
+  "n": 5183024
+ },
+ "reliability_quantile": {
+  "strategy": "quantile",
+  "bin_edges": [
+   0.0,
+   1.0
+  ],
+  "bin_center": [
+   0.5
+  ],
+  "mean_pred": [
+   0.204221
+  ],
+  "frac_pos": [
+   0.20348
+  ],
+  "count": [
+   5183024
+  ],
+  "n": 5183024
+ },
+ "cindex_td_self": 0.5,
+ "cindex_td_other": 0.5,
+ "cindex_td": 0.5,
+ "cindex_detail": {
+  "self": {
+   "cause": 1,
+   "n_events": 444838,
+   "n_pairs_drawn": 2000000,
+   "n_pairs_comparable": 1805375,
+   "pairs_sampled": true,
+   "pair_scheme": "i~事件行均匀, j~全部行均匀, 剔除同患者对子"
+  },
+  "other": {
+   "cause": 2,
+   "n_events": 597781,
+   "n_pairs_drawn": 2000000,
+   "n_pairs_comparable": 1632949,
+   "pairs_sampled": true,
+   "pair_scheme": "i~事件行均匀, j~全部行均匀, 剔除同患者对子"
+  },
+  "备注": "对子是抽样的，不是全量枚举；抽样规模见 n_pairs_drawn"
+ },
+ "auprc_at_24h": 0.139672,
+ "auprc@24h": 0.139672,
+ "n_pos_24h": 723921,
+ "auprc_at_24h_baserate": 0.139672,
+ "_env": {
+  "python": "3.11.0",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "cpu_count": 20,
+  "utc": "2026-09-21T13:29:52Z",
+  "numpy": "2.4.6",
+  "pandas": "3.0.6",
+  "pyarrow": "25.0.1",
+  "sklearn": "1.9.1",
+  "lightgbm": "4.7.0",
+  "torch": "2.11.0+cu128",
+  "git": "4d1c083"
+ },
+ "_elapsed_s": 15.1
+}

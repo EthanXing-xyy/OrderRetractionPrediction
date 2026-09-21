@@ -52,8 +52,13 @@ PREDS_DIR = C.RESULTS / "preds"
 LABELS_PATH = C.DATA / "labels.parquet"
 
 # 契约 §7 登记在案的模型名（不在表里只是提醒，不拦截）
-KNOWN_MODELS = ("baserate", "logreg", "lgbm_single", "lgbm_dual",
-                "gru", "transformer_v0", "transformer_cr")
+KNOWN_MODELS = ("baserate", "logreg", "lgbm_single", "lgbm_dual", "lgbm_3class", "lgbm_13",
+                # *_nc3 = 不重训、只在评测时排除 cause==3 的敏感性分析（见 s05_baseline）
+                "lgbm_single_nc3", "lgbm_dual_nc3", "lgbm_3class_nc3",
+                "gru", "transformer_v0", "transformer_cr", "transformer_single",
+                # 场景 B（eMAR landmark，见 s09_scenario_b），τ 取 6/12/24
+                *[f"lgbmB{t}_{h}{s}" for t in (6, 12, 24)
+                  for h in ("single", "3class") for s in ("", "_noemar")])
 
 # 契约 §7 的预测列
 P_REQUIRED = ("key", "subject_id", "p_disc", "p_self", "p_other", "p_disc_24h")
@@ -622,9 +627,16 @@ def attach_labels(pred_keys: np.ndarray, labels_path: Path = LABELS_PATH) -> dic
         raise SystemExit(f"[错误] {m} 条预测里只有 {lab_rows.size} 条能在 labels 里找到 key，"
                          f"对不上 {m - lab_rows.size} 条。模型和 labels 不是同一版，先查上游。")
 
-    inv = np.empty(m, dtype=np.int64)
-    inv[order] = np.arange(m)                     # pkey_sorted 下标 -> 原始行序
-    dest = inv[p_idx]
+    # `p_idx` 是 **pkey_sorted 里的下标**，还原成原始行序要用 `order` 本身：
+    #   pkey_sorted[j] == pred_keys[order[j]]  ⇒  原始行号 = order[j]
+    #
+    # 🔴 这里原先写的是 `inv[order] = arange(m); dest = inv[p_idx]`，即用了 order 的**逆置换**，
+    #    方向刚好反了。**当 pred_keys 恰好有序时 order 与其逆置换都等于 arange，bug 完全隐形**，
+    #    所以 40 项自测（合成数据的 key 是有序的）全过；而真实 preds 的 key 无序
+    #    （按 hadm/时间成块写出，不是按 key 排的），标签就被打乱成另一个排列，
+    #    实测把 lgbm_single 的 AUROC 从 0.808 打到 0.542、AUPRC 从 0.564 打到 0.232。
+    #    ⇒ 教训：**凡是涉及排列的代码，测试数据必须故意打乱**，有序输入测不出方向错误。
+    dest = order[p_idx]
     out = {}
     for name, fill in LABEL_COLS.items():
         col = C.col_np(labels_path, name, fill=fill)
@@ -1060,6 +1072,44 @@ def selftest() -> int:
          "auprc@24h：随机分数 ⇒ ≈24h 内撤销率", f"{truth.mean():.4f}")
     t.ok(not np.isnan(auprc_at_24h(yd, dh, rng.random(nn))),
          "auprc@24h：未撤销行的 delay_h=NaN 被当作负类，不产生 NaN")
+
+    # ---------- 回归：预测 key **无序**时的标签对齐 ----------
+    # 🔴 这一组是补上来的。`attach_labels` 原先用 order 的逆置换去还原行序，方向反了；
+    #    而**有序的 key 让 order 与其逆置换都等于 arange，bug 完全隐形**，
+    #    所以上面几十项自测全过，真实 preds 一上就把 AUROC 从 0.808 打到 0.542。
+    #    ⇒ 凡是涉及排列的代码，测试输入必须**故意打乱**。
+    import tempfile
+    import pyarrow as pa
+    import pyarrow.parquet as pqx
+    with tempfile.TemporaryDirectory() as td:
+        lp = Path(td) / "labels.parquet"
+        nk = 5000
+        lab_key = rng.permutation(np.arange(100_000, 100_000 + nk)).astype(np.int64)
+        lab_y = (lab_key % 7 == 0)
+        pqx.write_table(pa.table({
+            "key": lab_key, "in_cohort": np.ones(nk, bool), "y_disc": lab_y,
+            "delay_h": np.where(lab_y, 1.0, np.nan).astype(np.float32),
+            "cause": np.where(lab_y, 1, 0).astype(np.int8),
+            "y13": np.where(lab_y, 1, 0).astype(np.int8),
+            "censor_bin": np.full(nk, 5, np.int8)}), lp)
+
+        pk_shuf = rng.permutation(lab_key)          # 预测顺序与 labels 完全不同
+        g = attach_labels(pk_shuf, lp)
+        t.ok(np.array_equal(g["y_disc"], (pk_shuf % 7 == 0)),
+             "★预测 key 无序时标签仍逐行对齐（曾在此错过，导致 AUROC 0.81→0.54）",
+             f"错位 {int((g['y_disc'] != (pk_shuf % 7 == 0)).sum())} 行")
+        t.ok(np.array_equal(g["cause"], np.where(pk_shuf % 7 == 0, 1, 0).astype(np.int8)),
+             "★无序 key 下 cause 列同样对齐")
+
+        pk_sorted = np.sort(lab_key)                # 有序输入必须也对（防过度修正）
+        g2 = attach_labels(pk_sorted, lp)
+        t.ok(np.array_equal(g2["y_disc"], (pk_sorted % 7 == 0)),
+             "有序 key 下标签对齐（确认修复没把有序情形改坏）")
+
+        sub = rng.permutation(lab_key)[:1000]       # 只评测一部分行也要对
+        g3 = attach_labels(sub, lp)
+        t.ok(np.array_equal(g3["y_disc"], (sub % 7 == 0)),
+             "只取部分行、且无序时标签仍对齐")
 
     # ---------- 收尾 ----------
     print()

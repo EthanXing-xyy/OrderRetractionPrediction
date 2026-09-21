@@ -634,9 +634,9 @@ def subgroup_direction(Xtr, cause_tr, ot_col_idx, ot_vocab, cat_idx, names, para
                 "categorical": dirs[a][f]["categorical"]})
         out["flip_table"].sort(key=lambda d: -d["翻转幅度"])
 
-    # 不依赖模型的 pp 级佐证：数值特征四分位内「自撤占已知撤销的比例」
-    feats = [d["feature"] for d in out["flip_table"][:12] if not d["categorical"]] or \
-            [names[j] for j in sorted(numeric_set)][:8]
+    # 不依赖模型的 pp 级佐证：**全部**数值特征的四分位内「自撤占已知撤销的比例」
+    # （不挑特征——挑了就只能看见自己想看见的那几个）
+    feats = [names[j] for j in sorted(numeric_set)]
     for g in SUBGROUPS:
         if g not in name2code:
             continue
@@ -666,6 +666,45 @@ def subgroup_direction(Xtr, cause_tr, ot_col_idx, ot_vocab, cat_idx, names, para
         a_t, b_t = out["model_free_pp"][SUBGROUPS[0]], out["model_free_pp"][SUBGROUPS[1]]
         out["model_free_pp"]["符号相反的特征"] = sorted(
             f for f in set(a_t) & set(b_t) if a_t[f]["高−低_pp"] * b_t[f]["高−低_pp"] < 0)
+
+    # 四分位扫描**结构上看不见**「某个类别取值在两个子群里方向相反」这一形状，单独补一个扫描：
+    #   dev_g(v) = A_g(取值 v) − A_g(该子群全体)，A = 自撤占已知撤销的比例（pp）
+    # 两个子群 dev 反号、且两边都够大 ⇒ 这才是「同一特征方向相反」的直接证据。
+    lvl = {"说明": "只报类别的**整数编码**与聚合统计，绝不报 field_value / provider 的取值；"
+                   "两个子群任一侧 n<1000 的取值直接跳过（远高于 n<10 抑制线）。"
+                   "dev = 该取值的自撤占比 − 该子群总体自撤占比，单位 pp。",
+           "阈值": "反号且两侧 |dev| 均 >= 5pp", "命中": []}
+    gm, base_a = {}, {}
+    for g in SUBGROUPS:
+        if g not in name2code:
+            continue
+        m = (ot == float(name2code[g])) & np.isin(cause_tr, (1, 2))
+        gm[g] = m
+        base_a[g] = C.pct((cause_tr[m] == 1).sum(), m.sum())
+    lvl["子群基线自撤占比pct"] = base_a
+    if len(gm) == 2:
+        for j in sorted(set(cat_idx)):
+            dev = {}
+            for g, m in gm.items():
+                x, c = Xtr[m, j], cause_tr[m]
+                for u in np.unique(x[np.isfinite(x)]):
+                    sel = x == u
+                    n = int(sel.sum())
+                    if n < 1000:
+                        continue
+                    dev.setdefault(int(u), {})[g] = (C.pct((c[sel] == 1).sum(), n) - base_a[g], n)
+            for u, d in dev.items():
+                if len(d) < 2:
+                    continue
+                (d0, n0), (d1, n1) = d[SUBGROUPS[0]], d[SUBGROUPS[1]]
+                if d0 * d1 < 0 and min(abs(d0), abs(d1)) >= 5.0:
+                    lvl["命中"].append({"feature": names[j], "类别编码": u,
+                                        f"dev_{SUBGROUPS[0]}_pp": round(d0, 2), "n_0": C.sup(n0),
+                                        f"dev_{SUBGROUPS[1]}_pp": round(d1, 2), "n_1": C.sup(n1)})
+        lvl["命中"].sort(key=lambda r: -min(abs(r[f"dev_{SUBGROUPS[0]}_pp"]),
+                                            abs(r[f"dev_{SUBGROUPS[1]}_pp"])))
+        lvl["命中数"] = len(lvl["命中"])
+    out["类别取值级方向反转"] = lvl
     return out
 
 
@@ -684,6 +723,8 @@ def main() -> None:
     ap.add_argument("--with13", action="store_true", help="额外训 13 类 multiclass（慢）")
     ap.add_argument("--rounds13", type=int, default=300)
     ap.add_argument("--no-subgroup", action="store_true")
+    ap.add_argument("--only-direction", action="store_true",
+                    help="只跑「方向相反」那段分析并落一份指标，不训主模型（几分钟）")
     ap.add_argument("--models", default="all", help="逗号分隔：baserate,logreg,lgbm_single,lgbm_dual")
     ap.add_argument("--tag", default="", help="给 step/指标文件名加后缀，避免补跑时覆盖主结果")
     a = ap.parse_args()
@@ -822,6 +863,20 @@ def main() -> None:
     yes_d, ces = y_disc_all[es_mask], cause_all[es_mask]
     M["cohort"]["n_val_rows_earlystop"] = int(es_mask.sum())
 
+    # ---------- 3'. 只跑方向分析（--only-direction）----------
+    if a.only_direction:
+        M["subgroup_direction"] = subgroup_direction(
+            Xtr, ctr, ot_i, ot_vocab, cat_idx, names, lgb_params(cfg, "binary"), cfg,
+            min(a.time_budget_s, 420), ckpt_dir, seed,
+            max_rows=300_000 if a.smoke else 1_500_000, rounds=80 if a.smoke else 300)
+        M["elapsed_total_s"] = round(time.time() - t0, 1)
+        C.save_metrics(step, M, t0)
+        C.append_runlog(step, "只跑了「自撤/他撤方向相反」的子群分析（未训主模型）："
+                              f"类别取值级反转命中 "
+                              f"{M['subgroup_direction'].get('类别取值级方向反转', {}).get('命中数')} 个")
+        print(f"[{step}] 方向分析完成，用时 {M['elapsed_total_s']:.0f}s")
+        return
+
     # ---------- 3. 训练 ----------
     g = cfg["lgbm"]
     P = lgb_params(cfg, "binary")
@@ -842,6 +897,29 @@ def main() -> None:
                 cat_idx, names, P, rounds, es_rounds, a.time_budget_s,
                 ckpt_dir / f"lgbm_{h}.txt")
             M["models"][f"lgbm_{h}_head"]["top30_gain"] = top_gain(boosters[h], names)
+
+    # 三分类 softmax：{0=未撤, 1=自撤, 2=他撤}。与 lgbm_dual 一样是 cause-specific 分解，
+    # 但概率**共享归一化**（p_disc = p1+p2 = 1-p0 自动 ≤1），是更正确的估计量。
+    # cause==3 排除在**训练**外（不知道属于哪一类），但**保留在评测里当正类**——
+    # 让这个分解诚实地吃「撤了但不知谁撤」的亏，与 lgbm_dual 口径一致。
+    if want is None or "lgbm_3class" in want:
+        try:
+            k3, k3v = ctr != 3, ces != 3
+            boosters["c3"], M["models"]["lgbm_3class"] = train_lgb(
+                "lgbm_3class", Xtr[k3], ctr[k3], Xes[k3v], ces[k3v], cat_idx, names,
+                lgb_params(cfg, "multiclass", 3), rounds, es_rounds, a.time_budget_s * 2,
+                ckpt_dir / "lgbm_3class.txt")
+            M["models"]["lgbm_3class"].update({
+                "top30_gain": top_gain(boosters["c3"], names),
+                "n_train_rows": int(k3.sum()), "cause3_excluded_from_train": int((~k3).sum()),
+                "公平性": f"轮数上限与单头相同（{rounds}）、早停轮数相同（{es_rounds}）、"
+                          f"同一份训练行（仅去掉 cause==3 的 {int((~k3).sum()):,} 行）；"
+                          f"但早停指标不同：单头/双头用 average_precision，三分类用 multi_logloss"
+                          f"（multiclass 没有 AP 指标）。时间预算给了 2 倍"
+                          f"（{a.time_budget_s * 2:.0f}s），因为 multiclass 每轮建 3 棵树。"})
+        except Exception as e:                            # noqa: BLE001
+            print(f"⚠ lgbm_3class 失败：{type(e).__name__}: {e}")
+            M["models"]["lgbm_3class"] = {"failed": f"{type(e).__name__}: {e}"}
 
     if a.with13 and (want is None or "lgbm_13" in want):
         ytr13, yes13 = y13_all[tr_mask], y13_all[es_mask]
@@ -912,7 +990,7 @@ def main() -> None:
                 "p_self_vs_self": ap_selfcheck(cz == 1, ps),
                 "p_other_vs_other": ap_selfcheck(cz == 2, po),
                 "p_disc_24h_vs_y24": ap_selfcheck(y24, p24)}
-            store[model] = pd_
+            store[model] = (pd_, ps, po, p24)
 
         if want is None or "baserate" in want:
             o = np.ones(len(k), np.float32)
@@ -940,48 +1018,75 @@ def main() -> None:
             po = predict_chunked(boosters["other"], X)
             pd_sum = ps + po
             pd_ind = 1 - (1 - ps) * (1 - po)
-            p24 = ps * r24_self + po * r24_other
-            emit("lgbm_dual", pd_sum, ps, po, p24)
+            emit("lgbm_dual", pd_sum, ps, po, ps * r24_self + po * r24_other)
             M["preds"]["lgbm_dual"][sname]["composition"] = {
-                "primary": "p_disc = p_self + p_other（互斥竞争事件）",
+                "primary": "p_disc = p_self + p_other（互斥竞争事件；两个头独立训，概率不共享归一化）",
                 "alt_independent": "1-(1-p_self)(1-p_other)（假设独立共存，**不是**主结果）",
                 "auprc_primary_仅自查": ap_selfcheck(yd, pd_sum),
                 "auprc_alt_independent_仅自查": ap_selfcheck(yd, pd_ind),
                 "p_disc_24h": "p_self*r24_self + p_other*r24_other（两个 cause 的时序分布不同，"
                               f"r24_self={r24_self:.3f} vs r24_other={r24_other:.3f}）"}
-            if "single" in boosters:
-                pnc = {"lgbm_single_nc3": store["lgbm_single"][nc3],
-                       "lgbm_dual_nc3": pd_sum[nc3]}
-                write_preds(preds_dir, "lgbm_single_nc3", sname, k[nc3], s[nc3],
-                            pnc["lgbm_single_nc3"],
-                            pnc["lgbm_single_nc3"] * base["self"] / max(base["disc"], 1e-9),
-                            pnc["lgbm_single_nc3"] * base["other"] / max(base["disc"], 1e-9),
-                            pnc["lgbm_single_nc3"] * r24_all)
-                write_preds(preds_dir, "lgbm_dual_nc3", sname, k[nc3], s[nc3],
-                            pd_sum[nc3], ps[nc3], po[nc3], p24[nc3])
-                M["preds"].setdefault("_nc3_敏感性分析", {"做法":
-                    "模型**不重训**，只把评测行集合限制到 cause!=3；"
-                    "两个模型用同一批行，双头不再吃『撤了但不知谁撤』的亏"}).update(
-                    {"n_rows_" + sname: int(nc3.sum()),
-                     "excluded_" + sname: int((~nc3).sum())})
-                M.setdefault("prereg_selfcheck_仅自查", {})[sname] = {
-                    "auprc_lgbm_single": ap_selfcheck(yd, store["lgbm_single"]),
-                    "auprc_lgbm_dual": ap_selfcheck(yd, pd_sum),
-                    "delta_auprc": None, "判据": "ΔAUPRC>=0.01 且 bootstrap 95% CI 不含 0",
-                    "nc3_auprc_single": ap_selfcheck(yd[nc3], store["lgbm_single"][nc3]),
-                    "nc3_auprc_dual": ap_selfcheck(yd[nc3], pd_sum[nc3]),
-                    "⚠": "无 CI、非正式；正式判定见 s07_eval 的 bootstrap"}
-                q = M["prereg_selfcheck_仅自查"][sname]
-                if q["auprc_lgbm_single"] and q["auprc_lgbm_dual"]:
-                    q["delta_auprc"] = round(q["auprc_lgbm_dual"] - q["auprc_lgbm_single"], 6)
-                    q["nc3_delta_auprc"] = round(q["nc3_auprc_dual"] - q["nc3_auprc_single"], 6)
-            del ps, po, pd_sum, pd_ind, p24
+            del ps, po, pd_sum, pd_ind
+        if "c3" in boosters:
+            p3 = predict_chunked(boosters["c3"], X, n_class=3)
+            p3 = (p3 / p3.sum(1, keepdims=True)).astype(np.float32)
+            emit("lgbm_3class", p3[:, 1] + p3[:, 2], p3[:, 1], p3[:, 2],
+                 p3[:, 1] * r24_self + p3[:, 2] * r24_other)
+            M["preds"]["lgbm_3class"][sname]["composition"] = {
+                "primary": "p_disc = p1 + p2 = 1 - p0（三分类 softmax，概率共享归一化，天然 ≤1）",
+                "与 lgbm_dual 的区别": "同样是 cause-specific 分解，但这里三类在一个 softmax 里"
+                                       "联合归一化，不会出现 p_self+p_other>1，校准更好",
+                "max|p_disc-(1-p0)|": round(float(np.abs(
+                    (p3[:, 1] + p3[:, 2]) - (1 - p3[:, 0])).max()), 8)}
+            del p3
         if "m13" in boosters:
             p13 = predict_chunked(boosters["m13"], X, n_class=13)
             p13 = (p13 / p13.sum(1, keepdims=True)).astype(np.float32)
             emit("lgbm_13", 1 - p13[:, 0], p13[:, 1:7].sum(1), p13[:, 7:13].sum(1),
                  p13[:, [1, 2, 3, 7, 8, 9]].sum(1), p13)
             del p13
+
+        # ---- 排除 cause==3 的敏感性分析 + 预注册自查（单头 vs 两种 cause-specific 分解）----
+        CS = [m for m in ("lgbm_single", "lgbm_dual", "lgbm_3class") if m in store]
+        if "lgbm_single" in CS and len(CS) > 1:
+            for m in CS:
+                pd_, ps_, po_, p24_ = store[m]
+                write_preds(preds_dir, m + "_nc3", sname, k[nc3], s[nc3],
+                            pd_[nc3], ps_[nc3], po_[nc3], p24_[nc3])
+            M["preds"].setdefault("_nc3_敏感性分析", {"做法":
+                "模型**不重训**，只把评测行集合限制到 cause!=3；三个模型用同一批行，"
+                "cause-specific 分解不再吃『撤了但不知谁撤』的亏。"
+                "主结果仍以全样本为准（让分解诚实地吃这个亏）。"}).update(
+                {"n_rows_" + sname: int(nc3.sum()), "excluded_" + sname: int((~nc3).sum())})
+
+            base_ap = ap_selfcheck(yd, store["lgbm_single"][0])
+            q = {"auprc_lgbm_single": base_ap,
+                 "判据": "ΔAUPRC >= 0.01 且按 subject 重抽的 bootstrap 95% CI 不含 0",
+                 "⚠": "这里全是 sklearn 粗查、无 CI；正式判定见 s07_eval "
+                      "（--compare A B 的 Δ = A − B，故 --compare lgbm_dual lgbm_single）"}
+            for m in CS:
+                if m == "lgbm_single":
+                    continue
+                ap_full = ap_selfcheck(yd, store[m][0])
+                ap_nc3 = ap_selfcheck(yd[nc3], store[m][0][nc3])
+                q[f"auprc_{m}"] = ap_full
+                q[f"delta_{m}_minus_single"] = (None if ap_full is None or base_ap is None
+                                                else round(ap_full - base_ap, 6))
+                q[f"nc3_delta_{m}_minus_single"] = (
+                    None if ap_nc3 is None else
+                    round(ap_nc3 - ap_selfcheck(yd[nc3], store["lgbm_single"][0][nc3]), 6))
+            M.setdefault("prereg_selfcheck_仅自查", {})[sname] = q
+
+        # ---- 逐因指标：单头给不出这两个数，这是竞争风险模型不可替代的产出 ----
+        M.setdefault("逐因_auprc_仅自查", {})[sname] = {
+            m: {"auprc_self": ap_selfcheck(cz == 1, v[1]),
+                "auprc_other": ap_selfcheck(cz == 2, v[2]),
+                "auprc_disc": ap_selfcheck(yd, v[0])}
+            for m, v in store.items()}
+        M["逐因_auprc_仅自查"]["说明"] = (
+            "auprc_self / auprc_other 是竞争风险分解的不可替代产出：lgbm_single 没有真正的"
+            "逐因头，它那两列是把 p_disc 按训练集固定比例拆的，排序与 p_disc 完全一致，"
+            "所以它的 auprc_self/auprc_other 只是一个『不分因』的参照线，不是逐因预测能力。")
         del X, store
         gc.collect()
 
@@ -999,7 +1104,9 @@ def main() -> None:
         C.append_runlog(step, f"基线完成：{', '.join(M['models'])}；"
                               f"训练 {M['cohort']['n_train_rows_used']:,} 行"
                               f"（抽样率 {M['cohort']['train_sample_frac']:.3f}）；"
-                              f"test 粗查 ΔAUPRC(dual−single)={pr.get('delta_auprc')}"
+                              f"test 粗查 ΔAUPRC dual−single="
+                              f"{pr.get('delta_lgbm_dual_minus_single')}、"
+                              f"3class−single={pr.get('delta_lgbm_3class_minus_single')}"
                               f"（仅自查，正式见 s07_eval）")
     print(f"[{step}] 全部完成，用时 {M['elapsed_total_s']:.0f}s")
 

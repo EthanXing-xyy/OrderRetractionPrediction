@@ -110,3 +110,50 @@
 → 指标已写 results\metrics\s08_figures.json
 
 完成：5 张已画，4 张跳过/异常
+
+==============================================================================
+[s08_figures] 开始 2026-09-21 21:41:53  python=3.11.0  host-cores=20
+[字体自测] 已存 C:\Users\root\AppData\Local\Temp\s08_font_smoke_test.png（不进 results/figures/），请人工确认无方块字后再看正式图
+
+--- F1 ---
+  已画 results/figures/F1_revocation_rate_by_order_type.png：前10类+其它的撤销率，n 已标注；覆盖 n=52,133,098
+
+--- F2 ---
+  已画 results/figures/F2_delay_distribution.png：撤销时延对数直方图，n=10646493，p50=13.22h
+
+--- F3 ---
+  已画 results/figures/F3_hazard_shape_self_vs_other.png：自撤/他撤各自的时延桶分布（占各自总量%），n_self=4482544, n_other=6049516
+
+--- F4 ---
+  已画 results/figures/F4_self_share_by_order_type.png：16 个 order_type 的自撤占比（降序），n 已标注
+
+--- F5 ---
+  已画 results/figures/F5_cohort_flow.png：队列流：全部医嘱 n=52,212,109 → 最终 n=52,133,098
+
+--- F6 ---
+  已画 results/figures/F6_pr_curve.png：4 个模型的 PR 曲线：baserate, logreg, lgbm_single, lgbm_dual
+
+--- F7 ---
+  已画 results/figures/F7_calibration.png：4 个模型的校准曲线：baserate, logreg, lgbm_single, lgbm_dual
+
+--- F8 ---
+  已画 results/figures/F8_prereg_delta_auprc.png：ΔAUPRC=-0.0066 CI[-0.0072,-0.0062] 预注册判据未达成
+
+--- F9 ---
+  已画 results/figures/F9_feature_importance.png：lgbm_single 的 top20 特征重要性（gain），训练 n_rows=9,972,859、n_subjects=42,214
+→ 指标已写 results\metrics\s08_figures.json
+
+完成：9 张已画，0 张跳过/异常
+
+==============================================================================
+[s08_figures] 开始 2026-09-21 21:42:55  python=3.11.0  host-cores=20
+[字体自测] 已存 C:\Users\root\AppData\Local\Temp\s08_font_smoke_test.png（不进 results/figures/），请人工确认无方块字后再看正式图
+
+--- F6 ---
+  已画 results/figures/F6_pr_curve.png：5 个模型的 PR 曲线：baserate, logreg, lgbm_single, lgbm_dual, lgbm_3class
+
+--- F7 ---
+  已画 results/figures/F7_calibration.png：5 个模型的校准曲线：baserate, logreg, lgbm_single, lgbm_dual, lgbm_3class
+→ 指标已写 results\metrics\s08_figures.json
+
+完成：2 张已画，0 张跳过/异常

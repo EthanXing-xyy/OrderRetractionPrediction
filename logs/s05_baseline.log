@@ -1,0 +1,104 @@
+
+==============================================================================
+[s05_baseline] 开始 2026-09-21 19:59:16  python=3.11.0  host-cores=20
+[s05_baseline] data=H:\AIAUTORESEARCH\Project\data  out=H:\AIAUTORESEARCH\Project
+labels 行数 52,212,109；in_cohort 52,133,098（99.85%）
+特征 30 列：数值 9，类别 21
+ℹ 契约白名单内的滚动前缀统计（名字带 disc 但合法）：['f_prior_disc_known', 'f_prior_disc_rate', 'f_prov_prior_disc_rate', 'f_detail_discharge_planning']
+训练集 41,671,950 行 -> 抽 9,972,859 行（23.93%，按 subject 哈希 242/1024 桶；内存约束，抽样率已写进 JSON）
+训练标签率：撤销 20.42%，自撤 8.61%，他撤 11.59%，cause3 0.225%
+  [train] 已读 10/30 列 (2s)
+  [train] 已读 20/30 列 (5s)
+  [train] 已读 30/30 列 (8s)
+  [train] 矩阵 (9972859, 30)，1.11 GiB，8s
+✓ 特征不变式校验通过（训练矩阵 9,972,859 行）：{'f_prior_disc_known>f_n_prior_orders': 0, '第一条医嘱就已有撤销历史': 0, 'f_prior_disc_rate_越界[0,1]': 0, 'f_prov_prior_disc_rate_越界[0,1]': 0, 'f_prov_prior_self_rate_越界[0,1]': 0}
+早停用 val 子样本 2,993,294 行
+  [val_es] 已读 10/30 列 (2s)
+  [val_es] 已读 20/30 列 (3s)
+  [val_es] 已读 30/30 列 (5s)
+  [val_es] 矩阵 (2993294, 30)，0.33 GiB，5s
+[lgbm_single] 开训：9,972,859×30 正类率 20.422%
+[100]	valid's average_precision: 0.558851	valid's auc: 0.805424
+[200]	valid's average_precision: 0.561856	valid's auc: 0.807119
+[300]	valid's average_precision: 0.563024	valid's auc: 0.807699
+[400]	valid's average_precision: 0.563158	valid's auc: 0.807739
+[500]	valid's average_precision: 0.563419	valid's auc: 0.807873
+[600]	valid's average_precision: 0.563667	valid's auc: 0.807986
+[700]	valid's average_precision: 0.564007	valid's auc: 0.808143
+[800]	valid's average_precision: 0.564126	valid's auc: 0.808227
+[900]	valid's average_precision: 0.564237	valid's auc: 0.808264
+[1000]	valid's average_precision: 0.564369	valid's auc: 0.808316
+[1100]	valid's average_precision: 0.564416	valid's auc: 0.808327
+[lgbm_single] 完成 806s，best_iter=1046，{'average_precision': 0.564409, 'auc': 0.808331}
+[lgbm_self] 开训：9,972,859×30 正类率 8.606%
+[100]	valid's average_precision: 0.275225	valid's auc: 0.784855
+[200]	valid's average_precision: 0.27769	valid's auc: 0.786571
+[300]	valid's average_precision: 0.278627	valid's auc: 0.787186
+[400]	valid's average_precision: 0.278542	valid's auc: 0.787199
+[lgbm_self] 完成 343s，best_iter=327，{'average_precision': 0.278684, 'auc': 0.78722}
+[lgbm_other] 开训：9,972,859×30 正类率 11.591%
+[100]	valid's average_precision: 0.419725	valid's auc: 0.822618
+[200]	valid's average_precision: 0.423897	valid's auc: 0.824439
+[300]	valid's average_precision: 0.425103	valid's auc: 0.824977
+[400]	valid's average_precision: 0.425345	valid's auc: 0.825057
+[500]	valid's average_precision: 0.425586	valid's auc: 0.825133
+[600]	valid's average_precision: 0.425765	valid's auc: 0.82522
+[700]	valid's average_precision: 0.426105	valid's auc: 0.82536
+[800]	valid's average_precision: 0.426369	valid's auc: 0.825466
+[900]	valid's average_precision: 0.426392	valid's auc: 0.825452
+[lgbm_other] 完成 711s，best_iter=829，{'average_precision': 0.426393, 'auc': 0.82547}
+[lgbm_3class] 开训：9,950,428×30 3 类
+[100]	valid's multi_logloss: 0.505392
+[200]	valid's multi_logloss: 0.50339
+[300]	valid's multi_logloss: 0.502743
+[400]	valid's multi_logloss: 0.502529
+[500]	valid's multi_logloss: 0.502476
+[600]	valid's multi_logloss: 0.50244
+[700]	valid's multi_logloss: 0.502416
+[800]	valid's multi_logloss: 0.502432
+[lgbm_3class] 完成 795s，best_iter=720，{'multi_logloss': 0.502406}
+[logreg] 设计矩阵 (2000000, 360)，nnz=60,000,000（229 MiB）
+A:\Python\Lib\site-packages\sklearn\linear_model\_stochastic_gradient.py:741: ConvergenceWarning: Maximum number of iteration reached before convergence. Consider increasing max_iter to improve the fit.
+  warnings.warn(
+A:\Python\Lib\site-packages\sklearn\linear_model\_stochastic_gradient.py:741: ConvergenceWarning: Maximum number of iteration reached before convergence. Consider increasing max_iter to improve the fit.
+  warnings.warn(
+A:\Python\Lib\site-packages\sklearn\linear_model\_stochastic_gradient.py:741: ConvergenceWarning: Maximum number of iteration reached before convergence. Consider increasing max_iter to improve the fit.
+  warnings.warn(
+A:\Python\Lib\site-packages\sklearn\linear_model\_stochastic_gradient.py:741: ConvergenceWarning: Maximum number of iteration reached before convergence. Consider increasing max_iter to improve the fit.
+  warnings.warn(
+[sub_Medications_self] 开训：1,350,000×30 正类率 8.621%
+[100]	valid's average_precision: 0.203433	valid's auc: 0.744671
+[sub_Medications_self] 完成 12s，best_iter=61，{'average_precision': 0.203915, 'auc': 0.744854}
+[sub_Medications_other] 开训：1,350,000×30 正类率 13.323%
+[100]	valid's average_precision: 0.31355	valid's auc: 0.740623
+[sub_Medications_other] 完成 14s，best_iter=71，{'average_precision': 0.314881, 'auc': 0.741368}
+[sub_IV therapy_self] 开训：471,531×30 正类率 7.029%
+[sub_IV therapy_self] 完成 5s，best_iter=41，{'average_precision': 0.223274, 'auc': 0.81566}
+[sub_IV therapy_other] 开训：471,531×30 正类率 10.700%
+[sub_IV therapy_other] 完成 5s，best_iter=41，{'average_precision': 0.413326, 'auc': 0.834024}
+  [val] 已读 10/30 列 (3s)
+  [val] 已读 20/30 列 (6s)
+  [val] 已读 30/30 列 (9s)
+  [val] 矩阵 (5278124, 30)，0.59 GiB，9s
+  → preds baserate_val.parquet  5,278,124 行  p_disc 截断率 0.0000%
+  → preds logreg_val.parquet  5,278,124 行  p_disc 截断率 0.0000%
+  → preds lgbm_single_val.parquet  5,278,124 行  p_disc 截断率 0.0000%
+  → preds lgbm_dual_val.parquet  5,278,124 行  p_disc 截断率 0.1634%
+  → preds lgbm_3class_val.parquet  5,278,124 行  p_disc 截断率 0.0000%
+  → preds lgbm_single_nc3_val.parquet  5,266,483 行  p_disc 截断率 0.0000%
+  → preds lgbm_dual_nc3_val.parquet  5,266,483 行  p_disc 截断率 0.1636%
+  → preds lgbm_3class_nc3_val.parquet  5,266,483 行  p_disc 截断率 0.0000%
+  [test] 已读 10/30 列 (3s)
+  [test] 已读 20/30 列 (6s)
+  [test] 已读 30/30 列 (9s)
+  [test] 矩阵 (5183024, 30)，0.58 GiB，9s
+  → preds baserate_test.parquet  5,183,024 行  p_disc 截断率 0.0000%
+  → preds logreg_test.parquet  5,183,024 行  p_disc 截断率 0.0000%
+  → preds lgbm_single_test.parquet  5,183,024 行  p_disc 截断率 0.0000%
+  → preds lgbm_dual_test.parquet  5,183,024 行  p_disc 截断率 0.1667%
+  → preds lgbm_3class_test.parquet  5,183,024 行  p_disc 截断率 0.0000%
+  → preds lgbm_single_nc3_test.parquet  5,171,021 行  p_disc 截断率 0.0000%
+  → preds lgbm_dual_nc3_test.parquet  5,171,021 行  p_disc 截断率 0.1668%
+  → preds lgbm_3class_nc3_test.parquet  5,171,021 行  p_disc 截断率 0.0000%
+→ 指标已写 results\metrics\s05_baseline.json
+[s05_baseline] 全部完成，用时 5100s

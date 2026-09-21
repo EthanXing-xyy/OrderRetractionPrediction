@@ -1,0 +1,34 @@
+{
+ "variant": "transformer_cr",
+ "n_params_m": 9.22,
+ "batch": 32,
+ "seq_len": 256,
+ "epochs": 3,
+ "lr": 0.0003,
+ "n_cat_field": 22,
+ "n_num_field": 11,
+ "n_block_train": 469357,
+ "amp": "bfloat16",
+ "bench": {
+  "steps": 20,
+  "step_per_s": 15.472,
+  "max_mem_alloc_gib": 0.791,
+  "max_mem_reserved_gib": 0.869
+ },
+ "_env": {
+  "python": "3.11.0",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "cpu_count": 20,
+  "utc": "2026-09-21T12:00:04Z",
+  "numpy": "2.4.6",
+  "pandas": "3.0.6",
+  "pyarrow": "25.0.1",
+  "sklearn": "1.9.1",
+  "lightgbm": "4.7.0",
+  "torch": "2.11.0+cu128",
+  "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "gpu_mem_gb": 6.0,
+  "git": "4d1c083"
+ },
+ "_elapsed_s": 16.0
+}

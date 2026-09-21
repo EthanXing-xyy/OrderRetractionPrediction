@@ -8,3 +8,39 @@
 [s07_eval_lgbm_single_test] 开始 2026-09-21 19:34:50  python=3.11.0  host-cores=20
 [错误] 找不到预测文件（模型 lgbm_single / split test）：H:\AIAUTORESEARCH\Project\results\preds\lgbm_single_test.parquet
        —— 上游脚本还没跑完。评测不造假数据，这里直接退出。
+
+==============================================================================
+[s07_eval_lgbm_single_test] 开始 2026-09-21 21:25:30  python=3.11.0  host-cores=20
+  读到 lgbm_single_test.parquet：5183024 行，不带 p13_*
+
+[lgbm_single / test] 队列内 5183024 行、22331 位患者、正类率 20.35%
+  AUROC=0.541856  AUPRC=0.231907（随机线 0.20348）
+  AUPRC_self=0.095608  AUPRC_other=0.134355（排除 cause=3 的 12003 行）
+  Brier=0.190145  ECE(等宽10桶)=0.12385  ECE(等频)=0.123867
+  C-index(td)：self=0.529892 other=0.53448 加权=0.532071（各抽 2000000 对，可比 1804604/1632500）
+  AUPRC@24h=0.158238（随机线 0.139672）
+→ 指标已写 results\metrics\s07_eval_lgbm_single_test.json
+
+==============================================================================
+[s07_eval_lgbm_single_test] 开始 2026-09-21 21:28:56  python=3.11.0  host-cores=20
+  读到 lgbm_single_test.parquet：5183024 行，不带 p13_*
+
+[lgbm_single / test] 队列内 5183024 行、22331 位患者、正类率 20.35%
+  AUROC=0.807694  AUPRC=0.563626（随机线 0.20348）
+  AUPRC_self=0.200856  AUPRC_other=0.36442（排除 cause=3 的 12003 行）
+  Brier=0.124109  ECE(等宽10桶)=0.004843  ECE(等频)=0.004858
+  C-index(td)：self=0.717182 other=0.782062 加权=0.747995（各抽 2000000 对，可比 1805375/1632949）
+  AUPRC@24h=0.382012（随机线 0.139672）
+→ 指标已写 results\metrics\s07_eval_lgbm_single_test.json
+
+==============================================================================
+[s07_eval_lgbm_single_test] 开始 2026-09-21 21:30:24  python=3.11.0  host-cores=20
+  读到 lgbm_single_test.parquet：5183024 行，不带 p13_*
+
+[lgbm_single / test] 队列内 5183024 行、22331 位患者、正类率 20.35%
+  AUROC=0.807694  AUPRC=0.563626（随机线 0.20348）
+  AUPRC_self=0.200856  AUPRC_other=0.36442（排除 cause=3 的 12003 行）
+  Brier=0.124109  ECE(等宽10桶)=0.004843  ECE(等频)=0.004858
+  C-index(td)：self=0.717182 other=0.782062 加权=0.747995（各抽 2000000 对，可比 1805375/1632949）
+  AUPRC@24h=0.382012（随机线 0.139672）
+→ 指标已写 results\metrics\s07_eval_lgbm_single_test.json

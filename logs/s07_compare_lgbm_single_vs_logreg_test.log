@@ -1,0 +1,13 @@
+
+==============================================================================
+[s07_compare_lgbm_single_vs_logreg_test] 开始 2026-09-21 21:39:36  python=3.11.0  host-cores=20
+  读到 lgbm_single_test.parquet：5183024 行，不带 p13_*
+  读到 logreg_test.parquet：5183024 行，不带 p13_*
+
+[预注册主实验] lgbm_single vs logreg @ test，指标=auprc，5183024 行 / 22331 位患者
+  bootstrap：1000 次 / 单位=subject_id / 22331 个患者 / 5183024 行 / 16 线程 / 实耗 84.3s
+  auprc(A)=0.563626  auprc(B)=0.510466
+  Δ=+0.053160  95% CI [+0.052043, +0.054329]  p_boot=0.0010  （真跑 1000 次）
+  判据：ΔAUPRC >= 0.01 且按 subject_id 重抽的 95% CI 不含 0
+  ★ 预注册判据：达成
+→ 指标已写 results\metrics\s07_compare_lgbm_single_vs_logreg_test.json

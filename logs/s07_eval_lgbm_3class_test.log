@@ -1,0 +1,24 @@
+
+==============================================================================
+[s07_eval_lgbm_3class_test] 开始 2026-09-21 21:26:19  python=3.11.0  host-cores=20
+  读到 lgbm_3class_test.parquet：5183024 行，不带 p13_*
+
+[lgbm_3class / test] 队列内 5183024 行、22331 位患者、正类率 20.35%
+  AUROC=0.541446  AUPRC=0.231559（随机线 0.20348）
+  AUPRC_self=0.102288  AUPRC_other=0.137584（排除 cause=3 的 12003 行）
+  Brier=0.189925  ECE(等宽10桶)=0.123936  ECE(等频)=0.123859
+  C-index(td)：self=0.545543 other=0.539418 加权=0.542634（各抽 2000000 对，可比 1804604/1632500）
+  AUPRC@24h=0.157935（随机线 0.139672）
+→ 指标已写 results\metrics\s07_eval_lgbm_3class_test.json
+
+==============================================================================
+[s07_eval_lgbm_3class_test] 开始 2026-09-21 21:31:47  python=3.11.0  host-cores=20
+  读到 lgbm_3class_test.parquet：5183024 行，不带 p13_*
+
+[lgbm_3class / test] 队列内 5183024 行、22331 位患者、正类率 20.35%
+  AUROC=0.805034  AUPRC=0.560739（随机线 0.20348）
+  AUPRC_self=0.282681  AUPRC_other=0.427435（排除 cause=3 的 12003 行）
+  Brier=0.124654  ECE(等宽10桶)=0.006538  ECE(等频)=0.006454
+  C-index(td)：self=0.77486 other=0.800899 加权=0.787227（各抽 2000000 对，可比 1805375/1632949）
+  AUPRC@24h=0.370013（随机线 0.139672）
+→ 指标已写 results\metrics\s07_eval_lgbm_3class_test.json

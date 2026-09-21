@@ -1,0 +1,54 @@
+{
+ "seq_len": 256,
+ "n_cat_field": 22,
+ "n_num_field": 11,
+ "tokens_dtype": "int16",
+ "cat_vocab_total": 10810,
+ "cat_vocab_max": 10197,
+ "n_num_indicator": 3,
+ "splits": {
+  "train": {
+   "n_row": 41735747,
+   "n_hadm": 430271,
+   "n_block": 469357,
+   "n_pos": 120155392,
+   "n_valid_y13": 41580971,
+   "pad_pct": 65.27,
+   "valid_pct": 34.61
+  },
+  "val": {
+   "n_row": 5285694,
+   "n_hadm": 54182,
+   "n_block": 59109,
+   "n_pos": 15131904,
+   "n_valid_y13": 5266461,
+   "pad_pct": 65.07,
+   "valid_pct": 34.8
+  },
+  "test": {
+   "n_row": 5190668,
+   "n_hadm": 54163,
+   "n_block": 58936,
+   "n_pos": 15087616,
+   "n_valid_y13": 5171000,
+   "pad_pct": 65.6,
+   "valid_pct": 34.27
+  }
+ },
+ "_env": {
+  "python": "3.11.0",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "cpu_count": 20,
+  "utc": "2026-09-21T11:59:37Z",
+  "numpy": "2.4.6",
+  "pandas": "3.0.6",
+  "pyarrow": "25.0.1",
+  "sklearn": "1.9.1",
+  "lightgbm": "4.7.0",
+  "torch": "2.11.0+cu128",
+  "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "gpu_mem_gb": 6.0,
+  "git": "4d1c083"
+ },
+ "_elapsed_s": 231.6
+}

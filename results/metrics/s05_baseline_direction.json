@@ -1,0 +1,1008 @@
+{
+ "run": {
+  "step": "s05_baseline_direction",
+  "smoke": false,
+  "synth": false,
+  "max_train_rows": 10000000,
+  "time_budget_s": 1200.0,
+  "seed": 20260921,
+  "lgbm_params_from_config": {
+   "num_leaves": 127,
+   "learning_rate": 0.05,
+   "n_estimators": 2000,
+   "early_stopping_rounds": 100,
+   "min_child_samples": 200,
+   "feature_fraction": 0.8,
+   "bagging_fraction": 0.8,
+   "bagging_freq": 1,
+   "num_threads": 18
+  },
+  "preds_dir": "results\\preds",
+  "备注": "本文件里所有 AUPRC 都是 sklearn 粗略自查值，正式指标见 s07_eval"
+ },
+ "models": {},
+ "preds": {},
+ "notes": [
+  "高基数类别特征 {'f_prov_code': 10193}：交给 LightGBM 原生 categorical 处理；logreg 侧按频次截到 max_categories=64（target-free）。f_prov_code 是 order_provider_id 的编码，**取值全程不输出**。"
+ ],
+ "leak_check": {
+  "hard_hits": [],
+  "allowlisted_disc_cols": [
+   "f_prior_disc_known",
+   "f_prior_disc_rate",
+   "f_prov_prior_disc_rate",
+   "f_detail_discharge_planning"
+  ]
+ },
+ "features": {
+  "n_total": 30,
+  "n_numeric": 9,
+  "n_categorical": 21,
+  "numeric": [
+   "f_since_admit_h",
+   "f_n_prior_orders",
+   "f_prior_disc_known",
+   "f_prior_disc_rate",
+   "f_dt_prev_order_h",
+   "f_prov_n_prior",
+   "f_prov_prior_disc_rate",
+   "f_prov_prior_self_rate",
+   "f_n_detail"
+  ],
+  "categorical": [
+   "f_order_type",
+   "f_order_subtype",
+   "f_transaction_type",
+   "f_hour",
+   "f_dow",
+   "f_admission_type",
+   "f_admission_location",
+   "f_insurance",
+   "f_careunit",
+   "f_curr_service",
+   "f_gender",
+   "f_age_bin",
+   "f_anchor_year_group",
+   "f_prov_code",
+   "f_prov_n_prior_bin",
+   "f_detail_route",
+   "f_detail_admit_category",
+   "f_detail_admit_to",
+   "f_detail_tubes_drains",
+   "f_detail_discharge_planning",
+   "f_detail_code_status"
+  ],
+  "整数型数值列_哨兵-1还原为NaN": [
+   "f_n_detail",
+   "f_n_prior_orders",
+   "f_prior_disc_known",
+   "f_prov_n_prior"
+  ],
+  "categorical_cardinality": {
+   "f_order_type": 16,
+   "f_order_subtype": 147,
+   "f_transaction_type": 5,
+   "f_hour": 24,
+   "f_dow": 7,
+   "f_admission_type": 9,
+   "f_admission_location": 11,
+   "f_insurance": 5,
+   "f_careunit": 46,
+   "f_curr_service": 21,
+   "f_gender": 2,
+   "f_age_bin": 6,
+   "f_anchor_year_group": 5,
+   "f_prov_code": 10193,
+   "f_prov_n_prior_bin": 6,
+   "f_detail_route": 201,
+   "f_detail_admit_category": 4,
+   "f_detail_admit_to": 24,
+   "f_detail_tubes_drains": 20,
+   "f_detail_discharge_planning": 1,
+   "f_detail_code_status": 4
+  }
+ },
+ "cohort": {
+  "n_train_rows_available": 41671950,
+  "n_train_rows_used": 9972859,
+  "train_sample_frac": 0.239318,
+  "n_val_rows": 5278124,
+  "n_test_rows": 5183024,
+  "n_train_subjects": 42214,
+  "train_rates": {
+   "disc": 0.204221,
+   "self": 0.086065,
+   "other": 0.115907,
+   "cause3": 0.002249,
+   "disc24h": 0.139312
+  },
+  "r24_given": {
+   "all": 0.682183,
+   "self": 0.82514,
+   "other": 0.576522
+  },
+  "抽样说明": "内存约束下按 subject 哈希抽样，同一患者整体进出；val/test 未抽样（smoke 除外）",
+  "n_val_rows_earlystop": 2993294
+ },
+ "cause3_penalty": {
+  "训练集_cause3占全部撤销pct": 1.1014,
+  "机制": "cause==3（撤销方或本单 provider 缺失，不知谁撤）在 lgbm_single 的标签里是正类，但在双头里两个头都算负类 ⇒ p_disc=p_self+p_other 会系统性偏低约这个量级。这是双头的真实劣势，主结果保留全部样本让它吃这个亏；另出 *_nc3 preds（模型不重训，仅评测行集合排除 cause==3）做敏感性分析。"
+ },
+ "feature_invariants": {
+  "f_prior_disc_known>f_n_prior_orders": 0,
+  "第一条医嘱就已有撤销历史": 0,
+  "f_prior_disc_rate_越界[0,1]": 0,
+  "f_prov_prior_disc_rate_越界[0,1]": 0,
+  "f_prov_prior_self_rate_越界[0,1]": 0
+ },
+ "subgroup_direction": {
+  "说明": "自撤头/他撤头分别在子群上重训（轮数与行数都更小），方向 = 特征值与其 SHAP 贡献的 Pearson 相关符号；类别特征的整数编码无序，其方向仅供参考（code_order_meaningless=true）。⚠ 这里的 90/10 只是**按行序**切的（行序≈按患者成块，非严格患者切分），仅用于这段辅助分析的早停与 SHAP 取样，**不产生任何上报指标**；正式指标一律走 s04 的患者级切分 + s07_eval。model_free_pp 是不依赖模型的佐证：在**已知 cause 的撤销单**里，按该特征的四分位看「自撤占比」，高四分位 − 低四分位的百分点差（pp）。",
+  "subgroups": {
+   "Medications": {
+    "n_train_rows": 4455956,
+    "n_used": 1500000,
+    "heads": {
+     "self": {
+      "top_gain": [
+       {
+        "feature": "f_prov_code",
+        "gain": 438852.05,
+        "gain_pct": 37.271
+       },
+       {
+        "feature": "f_transaction_type",
+        "gain": 414306.61,
+        "gain_pct": 35.187
+       },
+       {
+        "feature": "f_prov_prior_self_rate",
+        "gain": 84904.91,
+        "gain_pct": 7.211
+       },
+       {
+        "feature": "f_careunit",
+        "gain": 84288.06,
+        "gain_pct": 7.159
+       },
+       {
+        "feature": "f_hour",
+        "gain": 60051.1,
+        "gain_pct": 5.1
+       },
+       {
+        "feature": "f_n_prior_orders",
+        "gain": 23360.84,
+        "gain_pct": 1.984
+       },
+       {
+        "feature": "f_curr_service",
+        "gain": 16255.29,
+        "gain_pct": 1.381
+       },
+       {
+        "feature": "f_dt_prev_order_h",
+        "gain": 10588.08,
+        "gain_pct": 0.899
+       },
+       {
+        "feature": "f_detail_route",
+        "gain": 9105.25,
+        "gain_pct": 0.773
+       },
+       {
+        "feature": "f_prov_prior_disc_rate",
+        "gain": 8075.35,
+        "gain_pct": 0.686
+       },
+       {
+        "feature": "f_since_admit_h",
+        "gain": 6402.16,
+        "gain_pct": 0.544
+       },
+       {
+        "feature": "f_prior_disc_known",
+        "gain": 5735.21,
+        "gain_pct": 0.487
+       },
+       {
+        "feature": "f_admission_type",
+        "gain": 5643.05,
+        "gain_pct": 0.479
+       },
+       {
+        "feature": "f_prov_n_prior",
+        "gain": 4318.16,
+        "gain_pct": 0.367
+       },
+       {
+        "feature": "f_prior_disc_rate",
+        "gain": 2485.88,
+        "gain_pct": 0.211
+       }
+      ],
+      "train_s": 13.4,
+      "best_iteration": 61,
+      "n_trees": 61,
+      "pos_rate_train": 0.086214,
+      "valid_best_score_内部早停用": {
+       "average_precision": 0.203915,
+       "auc": 0.744854
+      },
+      "hit_time_budget": false,
+      "checkpoint": "checkpoints\\lgbm_sub_Medications_self.txt"
+     },
+     "other": {
+      "top_gain": [
+       {
+        "feature": "f_prov_code",
+        "gain": 568641.08,
+        "gain_pct": 34.573
+       },
+       {
+        "feature": "f_transaction_type",
+        "gain": 517115.57,
+        "gain_pct": 31.44
+       },
+       {
+        "feature": "f_careunit",
+        "gain": 186880.27,
+        "gain_pct": 11.362
+       },
+       {
+        "feature": "f_prov_prior_disc_rate",
+        "gain": 102608.82,
+        "gain_pct": 6.239
+       },
+       {
+        "feature": "f_hour",
+        "gain": 51734.01,
+        "gain_pct": 3.145
+       },
+       {
+        "feature": "f_prov_prior_self_rate",
+        "gain": 40986.78,
+        "gain_pct": 2.492
+       },
+       {
+        "feature": "f_admission_type",
+        "gain": 40645.48,
+        "gain_pct": 2.471
+       },
+       {
+        "feature": "f_n_prior_orders",
+        "gain": 32237.15,
+        "gain_pct": 1.96
+       },
+       {
+        "feature": "f_detail_route",
+        "gain": 28857.84,
+        "gain_pct": 1.755
+       },
+       {
+        "feature": "f_curr_service",
+        "gain": 25877.42,
+        "gain_pct": 1.573
+       },
+       {
+        "feature": "f_anchor_year_group",
+        "gain": 10732.59,
+        "gain_pct": 0.653
+       },
+       {
+        "feature": "f_prov_n_prior",
+        "gain": 9135.56,
+        "gain_pct": 0.555
+       },
+       {
+        "feature": "f_since_admit_h",
+        "gain": 8647.46,
+        "gain_pct": 0.526
+       },
+       {
+        "feature": "f_dt_prev_order_h",
+        "gain": 8205.05,
+        "gain_pct": 0.499
+       },
+       {
+        "feature": "f_prior_disc_known",
+        "gain": 5763.51,
+        "gain_pct": 0.35
+       }
+      ],
+      "train_s": 15.1,
+      "best_iteration": 71,
+      "n_trees": 71,
+      "pos_rate_train": 0.133229,
+      "valid_best_score_内部早停用": {
+       "average_precision": 0.314881,
+       "auc": 0.741368
+      },
+      "hit_time_budget": false,
+      "checkpoint": "checkpoints\\lgbm_sub_Medications_other.txt"
+     }
+    },
+    "direction": {
+     "f_transaction_type": {
+      "categorical": true,
+      "mean_abs_shap_self": 0.598156,
+      "dir_self": 0.3389,
+      "mean_abs_shap_other": 0.709911,
+      "dir_other": 0.4237,
+      "self_minus_other": -0.0848
+     },
+     "f_hour": {
+      "categorical": true,
+      "mean_abs_shap_self": 0.148326,
+      "dir_self": 0.1493,
+      "mean_abs_shap_other": 0.111193,
+      "dir_other": 0.1062,
+      "self_minus_other": 0.0431
+     },
+     "f_since_admit_h": {
+      "categorical": false,
+      "mean_abs_shap_self": 0.012924,
+      "dir_self": 0.2847,
+      "mean_abs_shap_other": 0.019921,
+      "dir_other": -0.2812,
+      "self_minus_other": 0.5659
+     },
+     "f_admission_type": {
+      "categorical": true,
+      "mean_abs_shap_self": 0.024404,
+      "dir_self": 0.2255,
+      "mean_abs_shap_other": 0.085566,
+      "dir_other": 0.3175,
+      "self_minus_other": -0.092
+     },
+     "f_careunit": {
+      "categorical": true,
+      "mean_abs_shap_self": 0.142338,
+      "dir_self": 0.3406,
+      "mean_abs_shap_other": 0.191922,
+      "dir_other": 0.1455,
+      "self_minus_other": 0.1951
+     },
+     "f_curr_service": {
+      "categorical": true,
+      "mean_abs_shap_self": 0.030916,
+      "dir_self": 0.0623,
+      "mean_abs_shap_other": 0.039744,
+      "dir_other": 0.4192,
+      "self_minus_other": -0.3569
+     },
+     "f_anchor_year_group": {
+      "categorical": true,
+      "mean_abs_shap_self": 0.00216,
+      "dir_self": -0.6212,
+      "mean_abs_shap_other": 0.006813,
+      "dir_other": -0.3194,
+      "self_minus_other": -0.3018
+     },
+     "f_n_prior_orders": {
+      "categorical": false,
+      "mean_abs_shap_self": 0.084319,
+      "dir_self": 0.3359,
+      "mean_abs_shap_other": 0.084266,
+      "dir_other": 0.6284,
+      "self_minus_other": -0.2925
+     },
+     "f_prior_disc_known": {
+      "categorical": false,
+      "mean_abs_shap_self": 0.01945,
+      "dir_self": 0.4405,
+      "mean_abs_shap_other": 0.012642,
+      "dir_other": 0.769,
+      "self_minus_other": -0.3285
+     },
+     "f_dt_prev_order_h": {
+      "categorical": false,
+      "mean_abs_shap_self": 0.054543,
+      "dir_self": -0.4905,
+      "mean_abs_shap_other": 0.029103,
+      "dir_other": -0.6857,
+      "self_minus_other": 0.1952
+     },
+     "f_prov_code": {
+      "categorical": true,
+      "mean_abs_shap_self": 0.148961,
+      "dir_self": -0.0347,
+      "mean_abs_shap_other": 0.132888,
+      "dir_other": -0.0031,
+      "self_minus_other": -0.0316
+     },
+     "f_prov_n_prior": {
+      "categorical": false,
+      "mean_abs_shap_self": 0.003869,
+      "dir_self": -0.2235,
+      "mean_abs_shap_other": 0.008742,
+      "dir_other": -0.535,
+      "self_minus_other": 0.3115
+     },
+     "f_prov_prior_disc_rate": {
+      "categorical": false,
+      "mean_abs_shap_self": 0.014032,
+      "dir_self": 0.7345,
+      "mean_abs_shap_other": 0.068199,
+      "dir_other": 0.7876,
+      "self_minus_other": -0.0531
+     },
+     "f_prov_prior_self_rate": {
+      "categorical": false,
+      "mean_abs_shap_self": 0.182161,
+      "dir_self": 0.8562,
+      "mean_abs_shap_other": 0.079665,
+      "dir_other": -0.8887,
+      "self_minus_other": 1.7449
+     },
+     "f_detail_route": {
+      "categorical": true,
+      "mean_abs_shap_self": 0.011825,
+      "dir_self": -0.1491,
+      "mean_abs_shap_other": 0.019576,
+      "dir_other": 0.0097,
+      "self_minus_other": -0.1588
+     }
+    }
+   },
+   "IV therapy": {
+    "n_train_rows": 523924,
+    "n_used": 523924,
+    "heads": {
+     "self": {
+      "top_gain": [
+       {
+        "feature": "f_prov_code",
+        "gain": 173625.61,
+        "gain_pct": 34.805
+       },
+       {
+        "feature": "f_order_subtype",
+        "gain": 103130.6,
+        "gain_pct": 20.674
+       },
+       {
+        "feature": "f_transaction_type",
+        "gain": 96888.35,
+        "gain_pct": 19.422
+       },
+       {
+        "feature": "f_careunit",
+        "gain": 29519.89,
+        "gain_pct": 5.918
+       },
+       {
+        "feature": "f_n_prior_orders",
+        "gain": 18289.24,
+        "gain_pct": 3.666
+       },
+       {
+        "feature": "f_prov_prior_disc_rate",
+        "gain": 17179.84,
+        "gain_pct": 3.444
+       },
+       {
+        "feature": "f_prov_prior_self_rate",
+        "gain": 16832.58,
+        "gain_pct": 3.374
+       },
+       {
+        "feature": "f_hour",
+        "gain": 15114.69,
+        "gain_pct": 3.03
+       },
+       {
+        "feature": "f_curr_service",
+        "gain": 7410.4,
+        "gain_pct": 1.486
+       },
+       {
+        "feature": "f_dt_prev_order_h",
+        "gain": 4390.45,
+        "gain_pct": 0.88
+       },
+       {
+        "feature": "f_prior_disc_known",
+        "gain": 3975.01,
+        "gain_pct": 0.797
+       },
+       {
+        "feature": "f_prov_n_prior",
+        "gain": 3926.55,
+        "gain_pct": 0.787
+       },
+       {
+        "feature": "f_prior_disc_rate",
+        "gain": 3387.36,
+        "gain_pct": 0.679
+       },
+       {
+        "feature": "f_since_admit_h",
+        "gain": 2019.96,
+        "gain_pct": 0.405
+       },
+       {
+        "feature": "f_admission_type",
+        "gain": 1636.7,
+        "gain_pct": 0.328
+       }
+      ],
+      "train_s": 5.7,
+      "best_iteration": 41,
+      "n_trees": 41,
+      "pos_rate_train": 0.070288,
+      "valid_best_score_内部早停用": {
+       "average_precision": 0.223274,
+       "auc": 0.81566
+      },
+      "hit_time_budget": false,
+      "checkpoint": "checkpoints\\lgbm_sub_IV_therapy_self.txt"
+     },
+     "other": {
+      "top_gain": [
+       {
+        "feature": "f_prov_code",
+        "gain": 196530.44,
+        "gain_pct": 26.635
+       },
+       {
+        "feature": "f_transaction_type",
+        "gain": 130475.11,
+        "gain_pct": 17.683
+       },
+       {
+        "feature": "f_curr_service",
+        "gain": 118183.49,
+        "gain_pct": 16.017
+       },
+       {
+        "feature": "f_order_subtype",
+        "gain": 110349.7,
+        "gain_pct": 14.956
+       },
+       {
+        "feature": "f_n_prior_orders",
+        "gain": 46217.26,
+        "gain_pct": 6.264
+       },
+       {
+        "feature": "f_careunit",
+        "gain": 39445.48,
+        "gain_pct": 5.346
+       },
+       {
+        "feature": "f_prov_prior_disc_rate",
+        "gain": 25701.5,
+        "gain_pct": 3.483
+       },
+       {
+        "feature": "f_prov_prior_self_rate",
+        "gain": 24212.73,
+        "gain_pct": 3.282
+       },
+       {
+        "feature": "f_hour",
+        "gain": 13270.75,
+        "gain_pct": 1.799
+       },
+       {
+        "feature": "f_prior_disc_known",
+        "gain": 10200.62,
+        "gain_pct": 1.382
+       },
+       {
+        "feature": "f_since_admit_h",
+        "gain": 5489.77,
+        "gain_pct": 0.744
+       },
+       {
+        "feature": "f_admission_type",
+        "gain": 5356.69,
+        "gain_pct": 0.726
+       },
+       {
+        "feature": "f_prov_n_prior",
+        "gain": 4631.39,
+        "gain_pct": 0.628
+       },
+       {
+        "feature": "f_dt_prev_order_h",
+        "gain": 3813.01,
+        "gain_pct": 0.517
+       },
+       {
+        "feature": "f_admission_location",
+        "gain": 1540.79,
+        "gain_pct": 0.209
+       }
+      ],
+      "train_s": 6.0,
+      "best_iteration": 41,
+      "n_trees": 41,
+      "pos_rate_train": 0.106998,
+      "valid_best_score_内部早停用": {
+       "average_precision": 0.413326,
+       "auc": 0.834024
+      },
+      "hit_time_budget": false,
+      "checkpoint": "checkpoints\\lgbm_sub_IV_therapy_other.txt"
+     }
+    },
+    "direction": {
+     "f_order_subtype": {
+      "categorical": true,
+      "mean_abs_shap_self": 0.528114,
+      "dir_self": 0.1203,
+      "mean_abs_shap_other": 0.366855,
+      "dir_other": 0.1123,
+      "self_minus_other": 0.008
+     },
+     "f_transaction_type": {
+      "categorical": true,
+      "mean_abs_shap_self": 0.334141,
+      "dir_self": 0.5425,
+      "mean_abs_shap_other": 0.354465,
+      "dir_other": 0.5501,
+      "self_minus_other": -0.0076
+     },
+     "f_hour": {
+      "categorical": true,
+      "mean_abs_shap_self": 0.094051,
+      "dir_self": 0.1313,
+      "mean_abs_shap_other": 0.045808,
+      "dir_other": 0.3482,
+      "self_minus_other": -0.2169
+     },
+     "f_since_admit_h": {
+      "categorical": false,
+      "mean_abs_shap_self": 0.008674,
+      "dir_self": -0.4142,
+      "mean_abs_shap_other": 0.012406,
+      "dir_other": -0.3554,
+      "self_minus_other": -0.0588
+     },
+     "f_admission_type": {
+      "categorical": true,
+      "mean_abs_shap_self": 0.016118,
+      "dir_self": -0.0544,
+      "mean_abs_shap_other": 0.021433,
+      "dir_other": 0.1223,
+      "self_minus_other": -0.1767
+     },
+     "f_careunit": {
+      "categorical": true,
+      "mean_abs_shap_self": 0.153442,
+      "dir_self": 0.2568,
+      "mean_abs_shap_other": 0.134699,
+      "dir_other": 0.2428,
+      "self_minus_other": 0.014
+     },
+     "f_curr_service": {
+      "categorical": true,
+      "mean_abs_shap_self": 0.042648,
+      "dir_self": 0.3342,
+      "mean_abs_shap_other": 0.283067,
+      "dir_other": 0.7028,
+      "self_minus_other": -0.3686
+     },
+     "f_n_prior_orders": {
+      "categorical": false,
+      "mean_abs_shap_self": 0.111175,
+      "dir_self": 0.4379,
+      "mean_abs_shap_other": 0.1226,
+      "dir_other": 0.533,
+      "self_minus_other": -0.0951
+     },
+     "f_prior_disc_known": {
+      "categorical": false,
+      "mean_abs_shap_self": 0.022195,
+      "dir_self": 0.5023,
+      "mean_abs_shap_other": 0.030315,
+      "dir_other": 0.6111,
+      "self_minus_other": -0.1088
+     },
+     "f_dt_prev_order_h": {
+      "categorical": false,
+      "mean_abs_shap_self": 0.024873,
+      "dir_self": -0.5057,
+      "mean_abs_shap_other": 0.009133,
+      "dir_other": -0.6106,
+      "self_minus_other": 0.1049
+     },
+     "f_prov_code": {
+      "categorical": true,
+      "mean_abs_shap_self": 0.176344,
+      "dir_self": -0.0592,
+      "mean_abs_shap_other": 0.14105,
+      "dir_other": -0.0064,
+      "self_minus_other": -0.0528
+     },
+     "f_prov_n_prior": {
+      "categorical": false,
+      "mean_abs_shap_self": 0.008212,
+      "dir_self": -0.4305,
+      "mean_abs_shap_other": 0.011881,
+      "dir_other": -0.5502,
+      "self_minus_other": 0.1197
+     },
+     "f_prov_prior_disc_rate": {
+      "categorical": false,
+      "mean_abs_shap_self": 0.086957,
+      "dir_self": 0.8041,
+      "mean_abs_shap_other": 0.075239,
+      "dir_other": 0.8136,
+      "self_minus_other": -0.0095
+     },
+     "f_prov_prior_self_rate": {
+      "categorical": false,
+      "mean_abs_shap_self": 0.09485,
+      "dir_self": 0.779,
+      "mean_abs_shap_other": 0.098351,
+      "dir_other": -0.804,
+      "self_minus_other": 1.583
+     }
+    }
+   }
+  },
+  "flip_table": [
+   {
+    "feature": "f_since_admit_h",
+    "self_minus_other_Medications": 0.5659,
+    "self_minus_other_IV therapy": -0.0588,
+    "符号翻转": true,
+    "翻转幅度": 0.6247,
+    "categorical": false
+   },
+   {
+    "feature": "f_hour",
+    "self_minus_other_Medications": 0.0431,
+    "self_minus_other_IV therapy": -0.2169,
+    "符号翻转": true,
+    "翻转幅度": 0.26,
+    "categorical": true
+   },
+   {
+    "feature": "f_prior_disc_known",
+    "self_minus_other_Medications": -0.3285,
+    "self_minus_other_IV therapy": -0.1088,
+    "符号翻转": false,
+    "翻转幅度": 0.2197,
+    "categorical": false
+   },
+   {
+    "feature": "f_n_prior_orders",
+    "self_minus_other_Medications": -0.2925,
+    "self_minus_other_IV therapy": -0.0951,
+    "符号翻转": false,
+    "翻转幅度": 0.1974,
+    "categorical": false
+   },
+   {
+    "feature": "f_prov_n_prior",
+    "self_minus_other_Medications": 0.3115,
+    "self_minus_other_IV therapy": 0.1197,
+    "符号翻转": false,
+    "翻转幅度": 0.1918,
+    "categorical": false
+   },
+   {
+    "feature": "f_careunit",
+    "self_minus_other_Medications": 0.1951,
+    "self_minus_other_IV therapy": 0.014,
+    "符号翻转": false,
+    "翻转幅度": 0.1811,
+    "categorical": true
+   },
+   {
+    "feature": "f_prov_prior_self_rate",
+    "self_minus_other_Medications": 1.7449,
+    "self_minus_other_IV therapy": 1.583,
+    "符号翻转": false,
+    "翻转幅度": 0.1619,
+    "categorical": false
+   },
+   {
+    "feature": "f_dt_prev_order_h",
+    "self_minus_other_Medications": 0.1952,
+    "self_minus_other_IV therapy": 0.1049,
+    "符号翻转": false,
+    "翻转幅度": 0.0903,
+    "categorical": false
+   },
+   {
+    "feature": "f_admission_type",
+    "self_minus_other_Medications": -0.092,
+    "self_minus_other_IV therapy": -0.1767,
+    "符号翻转": false,
+    "翻转幅度": 0.0847,
+    "categorical": true
+   },
+   {
+    "feature": "f_transaction_type",
+    "self_minus_other_Medications": -0.0848,
+    "self_minus_other_IV therapy": -0.0076,
+    "符号翻转": false,
+    "翻转幅度": 0.0772,
+    "categorical": true
+   },
+   {
+    "feature": "f_prov_prior_disc_rate",
+    "self_minus_other_Medications": -0.0531,
+    "self_minus_other_IV therapy": -0.0095,
+    "符号翻转": false,
+    "翻转幅度": 0.0436,
+    "categorical": false
+   },
+   {
+    "feature": "f_prov_code",
+    "self_minus_other_Medications": -0.0316,
+    "self_minus_other_IV therapy": -0.0528,
+    "符号翻转": false,
+    "翻转幅度": 0.0212,
+    "categorical": true
+   },
+   {
+    "feature": "f_curr_service",
+    "self_minus_other_Medications": -0.3569,
+    "self_minus_other_IV therapy": -0.3686,
+    "符号翻转": false,
+    "翻转幅度": 0.0117,
+    "categorical": true
+   }
+  ],
+  "model_free_pp": {
+   "Medications": {
+    "f_since_admit_h": {
+     "自撤占比_低四分位pct": 35.22,
+     "自撤占比_高四分位pct": 40.65,
+     "高−低_pp": 5.43,
+     "n_低": 244551,
+     "n_高": 244547
+    },
+    "f_n_prior_orders": {
+     "自撤占比_低四分位pct": 34.23,
+     "自撤占比_高四分位pct": 38.62,
+     "高−低_pp": 4.39,
+     "n_低": 251978,
+     "n_高": 245818
+    },
+    "f_prior_disc_known": {
+     "自撤占比_低四分位pct": 33.51,
+     "自撤占比_高四分位pct": 39.36,
+     "高−低_pp": 5.85,
+     "n_低": 273205,
+     "n_高": 248100
+    },
+    "f_prior_disc_rate": {
+     "自撤占比_低四分位pct": 32.88,
+     "自撤占比_高四分位pct": 41.91,
+     "高−低_pp": 9.03,
+     "n_低": 245193,
+     "n_高": 245029
+    },
+    "f_dt_prev_order_h": {
+     "自撤占比_低四分位pct": 41.67,
+     "自撤占比_高四分位pct": 37.28,
+     "高−低_pp": -4.39,
+     "n_低": 239150,
+     "n_高": 238937
+    },
+    "f_prov_n_prior": {
+     "自撤占比_低四分位pct": 35.41,
+     "自撤占比_高四分位pct": 39.83,
+     "高−低_pp": 4.42,
+     "n_低": 244553,
+     "n_高": 244557
+    },
+    "f_prov_prior_disc_rate": {
+     "自撤占比_低四分位pct": 38.19,
+     "自撤占比_高四分位pct": 36.27,
+     "高−低_pp": -1.92,
+     "n_低": 245002,
+     "n_高": 244412
+    },
+    "f_prov_prior_self_rate": {
+     "自撤占比_低四分位pct": 20.17,
+     "自撤占比_高四分位pct": 53.45,
+     "高−低_pp": 33.28,
+     "n_低": 244085,
+     "n_高": 244082
+    }
+   },
+   "IV therapy": {
+    "f_since_admit_h": {
+     "自撤占比_低四分位pct": 34.8,
+     "自撤占比_高四分位pct": 41.14,
+     "高−低_pp": 6.34,
+     "n_低": 23314,
+     "n_高": 23314
+    },
+    "f_n_prior_orders": {
+     "自撤占比_低四分位pct": 31.51,
+     "自撤占比_高四分位pct": 39.45,
+     "高−低_pp": 7.94,
+     "n_低": 23668,
+     "n_高": 23375
+    },
+    "f_prior_disc_known": {
+     "自撤占比_低四分位pct": 32.37,
+     "自撤占比_高四分位pct": 40.31,
+     "高−低_pp": 7.94,
+     "n_低": 25870,
+     "n_高": 23872
+    },
+    "f_prior_disc_rate": {
+     "自撤占比_低四分位pct": 32.05,
+     "自撤占比_高四分位pct": 41.29,
+     "高−低_pp": 9.24,
+     "n_低": 23378,
+     "n_高": 23316
+    },
+    "f_dt_prev_order_h": {
+     "自撤占比_低四分位pct": 44.1,
+     "自撤占比_高四分位pct": 36.15,
+     "高−低_pp": -7.95,
+     "n_低": 22630,
+     "n_高": 22599
+    },
+    "f_prov_n_prior": {
+     "自撤占比_低四分位pct": 36.12,
+     "自撤占比_高四分位pct": 43.14,
+     "高−低_pp": 7.02,
+     "n_低": 23316,
+     "n_高": 23317
+    },
+    "f_prov_prior_disc_rate": {
+     "自撤占比_低四分位pct": 39.37,
+     "自撤占比_高四分位pct": 36.58,
+     "高−低_pp": -2.79,
+     "n_低": 23294,
+     "n_高": 23294
+    },
+    "f_prov_prior_self_rate": {
+     "自撤占比_低四分位pct": 18.42,
+     "自撤占比_高四分位pct": 59.13,
+     "高−低_pp": 40.71,
+     "n_低": 23252,
+     "n_高": 23252
+    }
+   },
+   "符号相反的特征": []
+  },
+  "类别取值级方向反转": {
+   "说明": "只报类别的**整数编码**与聚合统计，绝不报 field_value / provider 的取值；两个子群任一侧 n<1000 的取值直接跳过（远高于 n<10 抑制线）。dev = 该取值的自撤占比 − 该子群总体自撤占比，单位 pp。",
+   "阈值": "反号且两侧 |dev| 均 >= 5pp",
+   "命中": [
+    {
+     "feature": "f_careunit",
+     "类别编码": 17,
+     "dev_Medications_pp": -6.3,
+     "n_0": 39177,
+     "dev_IV therapy_pp": 7.65,
+     "n_1": 3675
+    }
+   ],
+   "子群基线自撤占比pct": {
+    "Medications": 39.15,
+    "IV therapy": 39.62
+   },
+   "命中数": 1
+  }
+ },
+ "elapsed_total_s": 146.4,
+ "_env": {
+  "python": "3.11.0",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "cpu_count": 20,
+  "utc": "2026-09-21T13:32:29Z",
+  "numpy": "2.4.6",
+  "pandas": "3.0.6",
+  "pyarrow": "25.0.1",
+  "sklearn": "1.9.1",
+  "lightgbm": "4.7.0",
+  "torch": "2.11.0+cu128",
+  "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "gpu_mem_gb": 6.0,
+  "git": "4d1c083"
+ },
+ "_elapsed_s": 149.5
+}

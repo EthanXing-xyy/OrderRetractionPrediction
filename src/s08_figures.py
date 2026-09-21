@@ -90,10 +90,11 @@ HATCH_OTHER = "///"
 
 # 契约 §7 登记的模型名（docs/01_数据契约.md）。颜色按这个固定顺序分配，
 # 不随"这一轮实际有哪些模型跑完"变化——同一个模型在 F6/F7 两张图里颜色一致。
-MODEL_ORDER = ["baserate", "logreg", "lgbm_single", "lgbm_dual",
-               "gru", "transformer_v0", "transformer_cr"]
-_CAT_HEX = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#4a3aa7"]
-_CAT_MARK = ["o", "s", "^", "D", "v", "P", "X"]
+MODEL_ORDER = ["baserate", "logreg", "lgbm_single", "lgbm_dual", "lgbm_3class",
+               "gru", "transformer_single", "transformer_cr"]
+_CAT_HEX = ["#2a78d6", "#eb6834", "#1baf7a", "#eda100", "#e87ba4", "#008300", "#4a3aa7",
+            "#8c564b"]
+_CAT_MARK = ["o", "s", "^", "D", "v", "P", "X", "*"]
 MODEL_COLORS = dict(zip(MODEL_ORDER, _CAT_HEX))
 MODEL_MARKERS = dict(zip(MODEL_ORDER, _CAT_MARK))
 

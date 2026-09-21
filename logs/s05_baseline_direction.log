@@ -1,0 +1,31 @@
+
+==============================================================================
+[s05_baseline_direction] 开始 2026-09-21 21:30:02  python=3.11.0  host-cores=20
+[s05_baseline_direction] data=H:\AIAUTORESEARCH\Project\data  out=H:\AIAUTORESEARCH\Project
+labels 行数 52,212,109；in_cohort 52,133,098（99.85%）
+特征 30 列：数值 9，类别 21
+ℹ 契约白名单内的滚动前缀统计（名字带 disc 但合法）：['f_prior_disc_known', 'f_prior_disc_rate', 'f_prov_prior_disc_rate', 'f_detail_discharge_planning']
+训练集 41,671,950 行 -> 抽 9,972,859 行（23.93%，按 subject 哈希 242/1024 桶；内存约束，抽样率已写进 JSON）
+训练标签率：撤销 20.42%，自撤 8.61%，他撤 11.59%，cause3 0.225%
+  [train] 已读 10/30 列 (4s)
+  [train] 已读 20/30 列 (8s)
+  [train] 已读 30/30 列 (12s)
+  [train] 矩阵 (9972859, 30)，1.11 GiB，12s
+✓ 特征不变式校验通过（训练矩阵 9,972,859 行）：{'f_prior_disc_known>f_n_prior_orders': 0, '第一条医嘱就已有撤销历史': 0, 'f_prior_disc_rate_越界[0,1]': 0, 'f_prov_prior_disc_rate_越界[0,1]': 0, 'f_prov_prior_self_rate_越界[0,1]': 0}
+早停用 val 子样本 2,993,294 行
+  [val_es] 已读 10/30 列 (3s)
+  [val_es] 已读 20/30 列 (6s)
+  [val_es] 已读 30/30 列 (9s)
+  [val_es] 矩阵 (2993294, 30)，0.33 GiB，9s
+[sub_Medications_self] 开训：1,350,000×30 正类率 8.621%
+[100]	valid's average_precision: 0.203433	valid's auc: 0.744671
+[sub_Medications_self] 完成 13s，best_iter=61，{'average_precision': 0.203915, 'auc': 0.744854}
+[sub_Medications_other] 开训：1,350,000×30 正类率 13.323%
+[100]	valid's average_precision: 0.31355	valid's auc: 0.740623
+[sub_Medications_other] 完成 15s，best_iter=71，{'average_precision': 0.314881, 'auc': 0.741368}
+[sub_IV therapy_self] 开训：471,531×30 正类率 7.029%
+[sub_IV therapy_self] 完成 6s，best_iter=41，{'average_precision': 0.223274, 'auc': 0.81566}
+[sub_IV therapy_other] 开训：471,531×30 正类率 10.700%
+[sub_IV therapy_other] 完成 6s，best_iter=41，{'average_precision': 0.413326, 'auc': 0.834024}
+→ 指标已写 results\metrics\s05_baseline_direction.json
+[s05_baseline_direction] 方向分析完成，用时 146s
