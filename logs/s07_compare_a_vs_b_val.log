@@ -1,0 +1,5 @@
+
+==============================================================================
+[s07_compare_a_vs_b_val] 开始 2026-09-21 19:34:50  python=3.11.0  host-cores=20
+[错误] 找不到预测文件（模型 a / split val）：H:\AIAUTORESEARCH\Project\results\preds\a_val.parquet
+       —— 上游脚本还没跑完。评测不造假数据，这里直接退出。

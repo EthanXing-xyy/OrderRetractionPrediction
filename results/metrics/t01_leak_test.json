@@ -1,0 +1,28 @@
+{
+ "合成用例": "全部通过",
+ "真实数据抽样": {
+  "抽样住院数": 400,
+  "抽样医嘱数": 37031,
+  "f_n_prior_orders不一致行": 0,
+  "f_prior_disc_known不一致行": 0,
+  "已撤数超过此前下达数的行": 0,
+  "有历史撤销记录的行占比pct": 72.55
+ },
+ "结论": "未发现泄漏",
+ "_env": {
+  "python": "3.11.0",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "cpu_count": 20,
+  "utc": "2026-09-21T11:55:39Z",
+  "numpy": "2.4.6",
+  "pandas": "3.0.6",
+  "pyarrow": "25.0.1",
+  "sklearn": "1.9.1",
+  "lightgbm": "4.7.0",
+  "torch": "2.11.0+cu128",
+  "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "gpu_mem_gb": 6.0,
+  "git": "d662f68"
+ },
+ "_elapsed_s": 12.2
+}

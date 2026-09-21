@@ -1,0 +1,5 @@
+
+==============================================================================
+[s07_compare_lgbm_dual_vs_lgbm_single_test] 开始 2026-09-21 19:34:40  python=3.11.0  host-cores=20
+[错误] 找不到预测文件（模型 lgbm_dual / split test）：H:\AIAUTORESEARCH\Project\results\preds\lgbm_dual_test.parquet
+       —— 上游脚本还没跑完。评测不造假数据，这里直接退出。

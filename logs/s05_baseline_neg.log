@@ -1,0 +1,21 @@
+
+==============================================================================
+[s05_baseline_neg] 开始 2026-09-21 19:51:04  python=3.11.0  host-cores=20
+[s05_baseline_neg] data=C:\Users\root\AppData\Local\Temp\claude\H--AIAUTORESEARCH-MIMICIVAUTOIDEA\a92126aa-ecf1-495e-aabc-34deb30f6fca\scratchpad\synth4\data  out=C:\Users\root\AppData\Local\Temp\claude\H--AIAUTORESEARCH-MIMICIVAUTOIDEA\a92126aa-ecf1-495e-aabc-34deb30f6fca\scratchpad\synth4
+labels 行数 158,303；in_cohort 157,987（99.8%）
+特征 24 列：数值 8，类别 16
+ℹ 契约白名单内的滚动前缀统计（名字带 disc 但合法）：['f_prior_disc_known', 'f_prior_disc_rate', 'f_prov_prior_disc_rate']
+训练集 125,964 行 -> 抽 119,873 行（95.16%，按 subject 哈希 973/1024 桶；内存约束，抽样率已写进 JSON）
+训练标签率：撤销 48.59%，自撤 29.10%，他撤 18.98%，cause3 0.509%
+  [train] 已读 10/24 列 (0s)
+  [train] 已读 20/24 列 (0s)
+  [train] 矩阵 (119873, 24)，0.01 GiB，0s
+Traceback (most recent call last):
+  File "H:\AIAUTORESEARCH\Project\src\s05_baseline.py", line 1008, in <module>
+    main()
+  File "H:\AIAUTORESEARCH\Project\src\s05_baseline.py", line 802, in main
+    M["feature_invariants"] = check_feature_invariants(Xtr, names)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "H:\AIAUTORESEARCH\Project\src\s05_baseline.py", line 206, in check_feature_invariants
+    raise RuntimeError("🔴 特征不变式校验失败，拒绝训练：" + "；".join(bad) +
+RuntimeError: 🔴 特征不变式校验失败，拒绝训练：40 行『已撤数 > 此前下达数』（自指泄漏的指纹）。这是 t01_leak_test 抓过的那类前缀统计口径问题，请先修 s03。

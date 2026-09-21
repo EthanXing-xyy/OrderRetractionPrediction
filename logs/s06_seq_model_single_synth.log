@@ -1,0 +1,34 @@
+
+==============================================================================
+[s06_seq_model_single_synth] 开始 2026-09-21 19:42:21  python=3.11.0  host-cores=20
+变体=transformer_single  device=cuda  batch=32  epochs=1  lr=0.0003  amp=torch.bfloat16
+seq_len=256  n_cat=19  n_num=7  词表合计=3214
+参数量 7.28 M（其中 embedding 0.96 M）
+train 块 4471（全量 4471）  每 epoch 140 步
+  ep0 step 100/140  loss=0.50306  lr=8.83e-05  11.37 step/s  已用 0.1 min
+[epoch 0] 用时 0.3 min  val={'loss': 0.4978651511682864, 'n': 91330, 'auprc_rough': 0.19534012205444895, 'auroc_rough': 0.4952140970715416, 'pos_rate': 0.19811671958830615}
+[预测] 读 labels.in_cohort 建查表 …
+  val: 非 padding 位置 91488
+  val: in_cohort 位置 91488（契约 §7 只在 in_cohort 上出预测）
+→ 预测已写 C:\Users\root\AppData\Local\Temp\claude\H--AIAUTORESEARCH-MIMICIVAUTOIDEA\a92126aa-ecf1-495e-aabc-34deb30f6fca\scratchpad\preds\transformer_single_val.parquet（91488 行）
+  test: 非 padding 位置 86077
+  test: in_cohort 位置 86077（契约 §7 只在 in_cohort 上出预测）
+→ 预测已写 C:\Users\root\AppData\Local\Temp\claude\H--AIAUTORESEARCH-MIMICIVAUTOIDEA\a92126aa-ecf1-495e-aabc-34deb30f6fca\scratchpad\preds\transformer_single_test.parquet（86077 行）
+[完成] 用时 0.4 min
+
+==============================================================================
+[s06_seq_model_single_synth] 开始 2026-09-21 19:53:54  python=3.11.0  host-cores=20
+变体=transformer_single  device=cuda  batch=32  epochs=1  lr=0.0003  amp=torch.bfloat16
+seq_len=256  n_cat=18  n_num=8  词表合计=3206
+参数量 7.27 M（其中 embedding 0.95 M）
+train 块 4471（全量 4471）  每 epoch 140 步
+[epoch 0] 用时 0.3 min  val={'loss': 0.49789092816835845, 'n': 91330, 'auprc_rough': 0.1950626757412405, 'auroc_rough': 0.49242702605734917, 'pos_rate': 0.19811671958830615}
+[预测] 读 labels.in_cohort 建查表 …
+  训练集固定拆分比例（单头基线用）：自撤 0.4300 / 他撤 0.5700 / 24h 内 0.5506；训练集撤销率 0.1985
+  val: 非 padding 位置 91488
+  val: in_cohort 位置 91488（契约 §7 只在 in_cohort 上出预测）
+→ 预测已写 C:\Users\root\AppData\Local\Temp\claude\H--AIAUTORESEARCH-MIMICIVAUTOIDEA\a92126aa-ecf1-495e-aabc-34deb30f6fca\scratchpad\preds\transformer_single_val.parquet（91488 行）
+  test: 非 padding 位置 86077
+  test: in_cohort 位置 86077（契约 §7 只在 in_cohort 上出预测）
+→ 预测已写 C:\Users\root\AppData\Local\Temp\claude\H--AIAUTORESEARCH-MIMICIVAUTOIDEA\a92126aa-ecf1-495e-aabc-34deb30f6fca\scratchpad\preds\transformer_single_test.parquet（86077 行）
+[完成] 用时 0.4 min

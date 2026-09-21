@@ -1,0 +1,112 @@
+
+==============================================================================
+[s08_figures] 开始 2026-09-21 19:47:31  python=3.11.0  host-cores=20
+[字体自测] 已存 C:\Users\root\AppData\Local\Temp\s08_font_smoke_test.png（不进 results/figures/），请人工确认无方块字后再看正式图
+
+--- F1 ---
+  已画 results/figures/F1_revocation_rate_by_order_type.png：前10类+其它的撤销率，n 已标注；覆盖 n=52,133,098
+
+--- F2 ---
+  已画 results/figures/F2_delay_distribution.png：撤销时延对数直方图，n=10646493，p50=13.22h
+
+--- F3 ---
+  已画 results/figures/F3_hazard_shape_self_vs_other.png：自撤/他撤各自的时延桶分布（占各自总量%），n_self=4482544, n_other=6049516
+
+--- F4 ---
+  已画 results/figures/F4_self_share_by_order_type.png：16 个 order_type 的自撤占比（降序），n 已标注
+
+--- F5 ---
+  已画 results/figures/F5_cohort_flow.png：队列流：全部医嘱 n=52,212,109 → 最终 n=52,133,098
+
+--- F6 ---
+跳过 F6_pr_curve：results/preds/ 下没有任何模型的 test 预测文件（契约 §7），上游模型脚本还没产出预测
+
+--- F7 ---
+跳过 F7_calibration：没有任何 results/metrics/s07_eval_*_test.json 含 reliability 字段
+
+--- F8 ---
+跳过 F8_prereg_delta_auprc：缺 results/metrics/s07_compare_lgbm_dual_vs_lgbm_single_test.json（预注册主实验还没跑）
+
+--- F9 ---
+跳过 F9_feature_importance：缺 results/metrics/s05_baseline.json
+→ 指标已写 results\metrics\s08_figures.json
+
+完成：5 张已画，4 张跳过/异常
+
+==============================================================================
+[s08_figures] 开始 2026-09-21 19:48:21  python=3.11.0  host-cores=20
+[字体自测] 已存 C:\Users\root\AppData\Local\Temp\s08_font_smoke_test.png（不进 results/figures/），请人工确认无方块字后再看正式图
+
+--- F1 ---
+  已画 results/figures/F1_revocation_rate_by_order_type.png：前10类+其它的撤销率，n 已标注；覆盖 n=52,133,098
+[警告] 未知的图号 'FX'，跳过（可选：F1, F2, F3, F4, F5, F6, F7, F8, F9）
+
+--- F9 ---
+跳过 F9_feature_importance：缺 results/metrics/s05_baseline.json
+→ 指标已写 results\metrics\s08_figures.json
+
+完成：1 张已画，1 张跳过/异常
+
+==============================================================================
+[s08_figures] 开始 2026-09-21 19:49:20  python=3.11.0  host-cores=20
+[字体自测] 已存 C:\Users\root\AppData\Local\Temp\s08_font_smoke_test.png（不进 results/figures/），请人工确认无方块字后再看正式图
+
+--- F9 ---
+  已画 results/figures/F9_feature_importance.png：lgbm_single 的 top20 特征重要性（gain），训练 n_rows=419,367、n_subjects=1,776
+→ 指标已写 results\metrics\s08_figures.json
+
+完成：1 张已画，0 张跳过/异常
+
+==============================================================================
+[s08_figures] 开始 2026-09-21 19:50:00  python=3.11.0  host-cores=20
+[字体自测] 已存 C:\Users\root\AppData\Local\Temp\s08_font_smoke_test.png（不进 results/figures/），请人工确认无方块字后再看正式图
+
+--- F6 ---
+  已画 results/figures/F6_pr_curve.png：1 个模型的 PR 曲线：baserate
+→ 指标已写 results\metrics\s08_figures.json
+
+完成：1 张已画，0 张跳过/异常
+
+==============================================================================
+[s08_figures] 开始 2026-09-21 19:53:44  python=3.11.0  host-cores=20
+[字体自测] 已存 C:\Users\root\AppData\Local\Temp\s08_font_smoke_test.png（不进 results/figures/），请人工确认无方块字后再看正式图
+
+--- F6 ---
+  已画 results/figures/F6_pr_curve.png：1 个模型的 PR 曲线：baserate
+→ 指标已写 results\metrics\s08_figures.json
+
+完成：1 张已画，0 张跳过/异常
+
+==============================================================================
+[s08_figures] 开始 2026-09-21 19:54:40  python=3.11.0  host-cores=20
+[字体自测] 已存 C:\Users\root\AppData\Local\Temp\s08_font_smoke_test.png（不进 results/figures/），请人工确认无方块字后再看正式图
+
+--- F1 ---
+  已画 results/figures/F1_revocation_rate_by_order_type.png：前10类+其它的撤销率，n 已标注；覆盖 n=52,133,098
+
+--- F2 ---
+  已画 results/figures/F2_delay_distribution.png：撤销时延对数直方图，n=10646493，p50=13.22h
+
+--- F3 ---
+  已画 results/figures/F3_hazard_shape_self_vs_other.png：自撤/他撤各自的时延桶分布（占各自总量%），n_self=4482544, n_other=6049516
+
+--- F4 ---
+  已画 results/figures/F4_self_share_by_order_type.png：16 个 order_type 的自撤占比（降序），n 已标注
+
+--- F5 ---
+  已画 results/figures/F5_cohort_flow.png：队列流：全部医嘱 n=52,212,109 → 最终 n=52,133,098
+
+--- F6 ---
+跳过 F6_pr_curve：results/preds/ 下没有任何模型的 test 预测文件（契约 §7），上游模型脚本还没产出预测
+
+--- F7 ---
+跳过 F7_calibration：没有任何 results/metrics/s07_eval_*_test.json 含 reliability 字段
+
+--- F8 ---
+跳过 F8_prereg_delta_auprc：缺 results/metrics/s07_compare_lgbm_dual_vs_lgbm_single_test.json（预注册主实验还没跑）
+
+--- F9 ---
+跳过 F9_feature_importance：缺 results/metrics/s05_baseline.json
+→ 指标已写 results\metrics\s08_figures.json
+
+完成：5 张已画，4 张跳过/异常

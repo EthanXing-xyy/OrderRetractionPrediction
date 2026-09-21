@@ -1,0 +1,96 @@
+
+==============================================================================
+[t01_leak_test] 开始 2026-09-21 19:35:50  python=3.11.0  host-cores=20
+
+[A] 合成数据：手工构造已知答案
+  ✅ 严格早于 t₀ 的同住院医嘱数   得到 [np.int32(0), np.int32(1), np.int32(2), np.int32(3), np.int32(4)]
+  ✅ 截至 t₀ 已发生的撤销数（正确）   得到 [np.int32(0), np.int32(0), np.int32(1), np.int32(1), np.int32(1)]
+  ✅ ★陷阱确实存在：天真实现会高估   天真=[np.int64(0), np.int64(1), np.int64(2), np.int64(2), np.int64(2)] vs 正确=[np.int32(0), np.int32(0), np.int32(1), np.int32(1), np.int32(1)]
+  ✅ ★正确实现没有被陷阱骗到
+  ✅ 跨分组不串味   得到 [np.int32(0), np.int32(1), np.int32(0), np.int32(0)]
+
+[B] 真实数据：随机抽 300 次住院，用暴力双重循环重算
+  ✅ features 与 labels 的 key 逐行对齐
+  抽中 300 次住院，共 30,517 条医嘱
+  ✅ f_n_prior_orders 与暴力法一致   不一致 0 行
+  ❌ f_prior_disc_known 与暴力法一致   不一致 5086 行
+  ❌ 已撤数 ≤ 此前下达数（全 5200 万行）   违反 38 行
+  参考：f_prior_disc_known > 0 的行占 74.95%
+→ 指标已写 results\metrics\t01_leak_test.json
+
+============================================================
+泄漏审计：失败 ['f_prior_disc_known 与暴力法一致', '已撤数 ≤ 此前下达数（全 5200 万行）']
+
+==============================================================================
+[t01_leak_test] 开始 2026-09-21 19:44:42  python=3.11.0  host-cores=20
+
+[A] 合成数据：手工构造已知答案
+  ✅ 严格早于 t₀ 的同住院医嘱数   得到 [np.int32(0), np.int32(1), np.int32(2), np.int32(3), np.int32(4)]
+  ✅ 截至 t₀ 已发生的撤销数（正确）   得到 [np.int32(0), np.int32(0), np.int32(1), np.int32(1), np.int32(1)]
+  ✅ ★陷阱确实存在：天真实现会高估   天真=[np.int64(0), np.int64(1), np.int64(2), np.int64(2), np.int64(2)] vs 正确=[np.int32(0), np.int32(0), np.int32(1), np.int32(1), np.int32(1)]
+  ✅ ★正确实现没有被陷阱骗到
+  ✅ 跨分组不串味   得到 [np.int32(0), np.int32(1), np.int32(0), np.int32(0)]
+
+[B] 真实数据：随机抽 300 次住院，用暴力双重循环重算
+  ✅ features 与 labels 的 key 逐行对齐
+  抽中 300 次住院，共 30,517 条医嘱
+  ✅ f_n_prior_orders 与暴力法一致   不一致 0 行
+  ✅ f_prior_disc_known 与暴力法一致   不一致 0 行
+  ❌ 已撤数 ≤ 此前下达数（全 5200 万行）   违反 38 行
+  参考：f_prior_disc_known > 0 的行占 74.95%
+→ 指标已写 results\metrics\t01_leak_test.json
+
+============================================================
+泄漏审计：失败 ['已撤数 ≤ 此前下达数（全 5200 万行）']
+
+==============================================================================
+[t01_leak_test] 开始 2026-09-21 19:49:17  python=3.11.0  host-cores=20
+
+[A] 合成数据：手工构造已知答案
+  ✅ 严格早于 t₀ 的同住院医嘱数   得到 [np.int32(0), np.int32(1), np.int32(2), np.int32(3), np.int32(4)]
+  ✅ 截至 t₀ 已发生的撤销数（正确）   得到 [np.int32(0), np.int32(0), np.int32(1), np.int32(1), np.int32(1)]
+  ✅ ★陷阱确实存在：天真实现会高估   天真=[np.int64(0), np.int64(1), np.int64(2), np.int64(2), np.int64(2)] vs 正确=[np.int32(0), np.int32(0), np.int32(1), np.int32(1), np.int32(1)]
+  ✅ ★正确实现没有被陷阱骗到
+  ✅ ★同秒撤销：严格口径不把自己数进去   得到 [np.int32(0), np.int32(1), np.int32(1)]
+  ✅ ★同秒撤销：宽松口径确实会自指（所以不能用）   得到 [np.int32(0), np.int32(1), np.int32(2)]
+  ✅ ★不变式：已撤数 ≤ 此前下达数（严格口径）
+  ✅ 跨分组不串味   得到 [np.int32(0), np.int32(1), np.int32(0), np.int32(0)]
+
+[B] 真实数据：随机抽 400 次住院，用暴力双重循环重算
+  ❌ features 与 labels 的 key 逐行对齐
+  抽中 400 次住院，共 37,031 条医嘱
+Traceback (most recent call last):
+  File "H:\AIAUTORESEARCH\Project\src\t01_leak_test.py", line 170, in <module>
+    main()
+  File "H:\AIAUTORESEARCH\Project\src\t01_leak_test.py", line 160, in main
+    real = on_real(a.n_adm)
+           ^^^^^^^^^^^^^^^^
+  File "H:\AIAUTORESEARCH\Project\src\t01_leak_test.py", line 137, in on_real
+    bad_n += int(f_npri[idx[m[a]]] != int((tt < tt[a]).sum()))
+                 ~~~~~~^^^^^^^^^^^
+IndexError: index 48832483 is out of bounds for axis 0 with size 0
+
+==============================================================================
+[t01_leak_test] 开始 2026-09-21 19:55:30  python=3.11.0  host-cores=20
+
+[A] 合成数据：手工构造已知答案
+  ✅ 严格早于 t₀ 的同住院医嘱数   得到 [np.int32(0), np.int32(1), np.int32(2), np.int32(3), np.int32(4)]
+  ✅ 截至 t₀ 已发生的撤销数（正确）   得到 [np.int32(0), np.int32(0), np.int32(1), np.int32(1), np.int32(1)]
+  ✅ ★陷阱确实存在：天真实现会高估   天真=[np.int64(0), np.int64(1), np.int64(2), np.int64(2), np.int64(2)] vs 正确=[np.int32(0), np.int32(0), np.int32(1), np.int32(1), np.int32(1)]
+  ✅ ★正确实现没有被陷阱骗到
+  ✅ ★同秒撤销：严格口径不把自己数进去   得到 [np.int32(0), np.int32(1), np.int32(1)]
+  ✅ ★同秒撤销：宽松口径确实会自指（所以不能用）   得到 [np.int32(0), np.int32(1), np.int32(2)]
+  ✅ ★不变式：已撤数 ≤ 此前下达数（严格口径）
+  ✅ 跨分组不串味   得到 [np.int32(0), np.int32(1), np.int32(0), np.int32(0)]
+
+[B] 真实数据：随机抽 400 次住院，用暴力双重循环重算
+  ✅ features 与 labels 的 key 逐行对齐   features 52,212,109 行 vs labels 52,212,109 行
+  抽中 400 次住院，共 37,031 条医嘱
+  ✅ f_n_prior_orders 与暴力法一致   不一致 0 行
+  ✅ f_prior_disc_known 与暴力法一致   不一致 0 行
+  ✅ 已撤数 ≤ 此前下达数（全 5200 万行）   违反 0 行
+  参考：f_prior_disc_known > 0 的行占 72.55%
+→ 指标已写 results\metrics\t01_leak_test.json
+
+============================================================
+泄漏审计：全部通过 ✅

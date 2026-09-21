@@ -1,0 +1,53 @@
+{
+ "n_subjects": 222121,
+ "n_orders": 52212109,
+ "salt_hex": "0x424e3532",
+ "hash": "splitmix64(subject_id ^ salt) % 100",
+ "患者数": {
+  "train": 177597,
+  "val": 22188,
+  "test": 22336
+ },
+ "患者占比pct": {
+  "train": 79.96,
+  "val": 9.99,
+  "test": 10.06
+ },
+ "医嘱数": {
+  "train": 41735747,
+  "val": 5285694,
+  "test": 5190668
+ },
+ "医嘱占比pct": {
+  "train": 79.93,
+  "val": 10.12,
+  "test": 9.94
+ },
+ "队列内医嘱数": {
+  "train": 41671950,
+  "val": 5278124,
+  "test": 5183024
+ },
+ "时间外推": {
+  "年份档数": 5,
+  "早期训练患者": 193803,
+  "晚期测试患者": 28318,
+  "无年份": 0
+ },
+ "_env": {
+  "python": "3.11.0",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "cpu_count": 20,
+  "utc": "2026-09-21T11:33:29Z",
+  "numpy": "2.4.6",
+  "pandas": "3.0.6",
+  "pyarrow": "25.0.1",
+  "sklearn": "1.9.1",
+  "lightgbm": "4.7.0",
+  "torch": "2.11.0+cu128",
+  "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "gpu_mem_gb": 6.0,
+  "git": "d662f68"
+ },
+ "_elapsed_s": 27.1
+}

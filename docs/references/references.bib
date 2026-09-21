@@ -1,0 +1,266 @@
+% ============================================================
+% references.bib
+% BN5212 课程项目 —— 医嘱撤销预测 (order retraction prediction)
+% 文献库，共 20 条。检索日期：2026-09-21
+% 检索来源：Crossref API / PubMed E-utilities / arXiv API / PMLR / NeurIPS proceedings
+% ============================================================
+
+% ---------- A 支：最近的邻居 ----------
+
+@article{balestra2021predicting,
+  author  = {Balestra, Martina and Chen, Ji and Iturrate, Eduardo and Aphinyanaphongs, Yindalon and Nov, Oded},
+  title   = {Predicting inpatient pharmacy order interventions using provider action data},
+  journal = {{JAMIA} Open},
+  year    = {2021},
+  volume  = {4},
+  number  = {3},
+  pages   = {ooab083},
+  doi     = {10.1093/jamiaopen/ooab083},
+  pmid    = {34617009},
+  note    = {AUROC 0.91, AUPRC 0.44；单中心两周数据；仅预测药房干预（“他撤”的一半），无时间维度、无竞争风险建模。已获取全文 PDF（open access, 但脚本受出版商反爬限制未能自动下载，摘要已核实）},
+}
+
+@article{adelman2013understanding,
+  author  = {Adelman, Jason S. and Kalkut, Gary E. and Schechter, Clyde B. and Weiss, Jeffrey M. and Berger, Matthew A. and Reissman, Stan H. and Cohen, Hillel W. and Lorenzen, Stephen J. and Burack, Daniel A. and Southern, William N.},
+  title   = {Understanding and preventing wrong-patient electronic orders: a randomized controlled trial},
+  journal = {Journal of the American Medical Informatics Association},
+  year    = {2013},
+  volume  = {20},
+  number  = {2},
+  pages   = {305--310},
+  doi     = {10.1136/amiajnl-2012-001055},
+  pmid    = {22753810},
+  note    = {Retract-and-Reorder (RAR) 方法学的奠基论文；RAR 工具 PPV 76.2\%（95\% CI 70.6--81.9\%）；phase 2 RCT 覆盖 901{,}776 次下单会话、4028 名医生。},
+}
+
+@article{adelman2019effect,
+  author  = {Adelman, Jason S. and Applebaum, Jo R. and Schechter, Clyde B. and Berger, Matthew A. and Reissman, Stan H. and Thota, Raja and Racine, Andrew D. and Vawdrey, David K. and Green, Robert A. and Salmasian, Hojjat and Schiff, Gordon D. and Wright, Adam and Landman, Adam and Bates, David W. and Koppel, Ross and Galanter, William L. and Lambert, Bruce L. and Paparella, Susan and Southern, William N.},
+  title   = {Effect of Restriction of the Number of Concurrently Open Records in an Electronic Health Record on Wrong-Patient Order Errors: A Randomized Clinical Trial},
+  journal = {{JAMA}},
+  year    = {2019},
+  volume  = {321},
+  number  = {18},
+  pages   = {1780},
+  doi     = {10.1001/jama.2019.3698},
+  pmid    = {31087021},
+  note    = {以 Wrong-Patient RAR measure 为主要结局的三臂 RCT；3356 名医生、12{,}140{,}298 条医嘱、4{,}486{,}631 次下单会话、543{,}490 名患者。},
+}
+
+@article{salmasian2020association,
+  author  = {Salmasian, Hojjat and Blanchfield, Bonnie B. and Joyce, Kelley and Centeio, Kaila and Schiff, Gordon B. and Wright, Adam and Baugh, Christopher W. and Schuur, Jeremiah D. and Bates, David W. and Adelman, Jason S. and Landman, Adam B.},
+  title   = {Association of Display of Patient Photographs in the Electronic Health Record With Wrong-Patient Order Entry Errors},
+  journal = {{JAMA} Network Open},
+  year    = {2020},
+  volume  = {3},
+  number  = {11},
+  pages   = {e2019652},
+  doi     = {10.1001/jamanetworkopen.2020.19652},
+  pmid    = {33175173},
+  note    = {以 RAR measure 为结局变量；2{,}558{,}746 条医嘱、71{,}851 名患者；调整前 OR 0.72 (0.57--0.89)，调整后 OR 0.57 (0.52--0.61)。},
+}
+
+@article{kneifatihayek2024retrospective,
+  author  = {Kneifati-Hayek, Jerard Z. and Geist, Elias and Applebaum, Jo R. and Dal Col, Alexis K. and Salmasian, Hojjat and Schechter, Clyde B. and Elhadad, No{\'e}mie and Weintraub, Joshua and Adelman, Jason S.},
+  title   = {Retrospective cohort study of wrong-patient imaging order errors: how many reach the patient?},
+  journal = {{BMJ} Quality \& Safety},
+  year    = {2024},
+  volume  = {33},
+  number  = {2},
+  pages   = {132--135},
+  doi     = {10.1136/bmjqs-2023-016162},
+  pmid    = {38071526},
+  note    = {293{,}039 条放射类医嘱中 151 条为误患者医嘱，其中仅 2\% 真正触达患者（50 起 near-miss 对应 1 起触达）；说明 RAR/撤销事件是有噪声的严重度标签，并非都等价于到达患者的伤害。},
+}
+
+@article{spector2026framework,
+  author  = {Spector, Pooja Reddy and Grauer, Anne and Kneifati-Hayek, Jerard Z. and Ranard, Benjamin L. and Applebaum, Jo R. and Fernandes, Yelstin and Salmasian, Hojjat and Southern, William N. and Schechter, Clyde B. and Hruby, Gregory and Cooke, Joseph T. and Kumaraiah, Deepa and Fertel, Baruch and Adelman, Jason S.},
+  title   = {A framework for developing, validating, and utilizing automated measures of order errors using the retract-and-reorder methodology},
+  journal = {{JAMIA} Open},
+  year    = {2026},
+  volume  = {9},
+  number  = {5},
+  pages   = {ooag165},
+  doi     = {10.1093/jamiaopen/ooag165},
+  pmid    = {42723956},
+  note    = {最新的 RAR 方法学框架论文，系统化了 RAR 类测度的开发、验证与应用；仍是"事后审计指标"框架，非逐单预测模型。},
+}
+
+% ---------- B 支：CPOE 医嘱推荐 / 警报覆盖 ----------
+
+@article{chen2016orderrex,
+  author  = {Chen, Jonathan H. and Podchiyska, Tanya and Altman, Russ B.},
+  title   = {{OrderRex}: clinical order decision support and outcome predictions by data-mining electronic medical records},
+  journal = {Journal of the American Medical Informatics Association},
+  year    = {2016},
+  volume  = {23},
+  number  = {2},
+  pages   = {339--348},
+  doi     = {10.1093/jamia/ocv091},
+  pmid    = {26198303},
+  note    = {单中心 1 年数据，>18K 患者、>5.4M 结构化条目；推荐系统 precision@10 由 33\%提升到 38\%；30 天死亡 AUC 0.84、1 周 ICU AUC 0.84、1 周出院 AUC 0.80、30 天再入院 AUC 0.68。预测目标是"下一步该开什么"，不是"这条医嘱会不会被撤销"。},
+}
+
+@article{kumar2020orderrex,
+  author  = {Kumar, Andre and Aikens, Rachael C. and Hom, Jason and Shieh, Lisa and Chiang, Jonathan and Morales, David and Saini, Divya and Musen, Mark and Baiocchi, Michael and Altman, Russ and Goldstein, Mary K. and Asch, Steven and Chen, Jonathan H.},
+  title   = {{OrderRex} clinical user testing: a randomized trial of recommender system decision support on simulated cases},
+  journal = {Journal of the American Medical Informatics Association},
+  year    = {2020},
+  volume  = {27},
+  number  = {12},
+  pages   = {1850--1859},
+  doi     = {10.1093/jamia/ocaa190},
+  pmid    = {33106874},
+  note    = {OrderRex 的临床用户测试后续研究，评估推荐是否真正被医生采纳。},
+}
+
+@article{baron2021machine,
+  author  = {Baron, Jason M. and Huang, Richard and McEvoy, Dustin and Dighe, Anand S.},
+  title   = {Use of machine learning to predict clinical decision support compliance, reduce alert burden, and evaluate duplicate laboratory test ordering alerts},
+  journal = {{JAMIA} Open},
+  year    = {2021},
+  volume  = {4},
+  number  = {1},
+  pages   = {ooab006},
+  doi     = {10.1093/jamiaopen/ooab006},
+  pmid    = {33709062},
+  note    = {8 家医院、60{,}399 次警报，逻辑回归预测医生是否遵从重复检验警报，AUC 0.82；预测目标是"医生会不会听警报"，概念上与"医嘱会不会被撤销"接近但对象不同（警报合规 vs. 医嘱撤销）。},
+}
+
+@article{poly2020appropriateness,
+  author  = {Poly, Tahmina Nasrin and Islam, Md Mohaimenul and Yang, Hsuan-Chia and Li, Yu-Chuan Jack},
+  title   = {Appropriateness of Overridden Alerts in Computerized Physician Order Entry: Systematic Review},
+  journal = {{JMIR} Medical Informatics},
+  year    = {2020},
+  volume  = {8},
+  number  = {7},
+  pages   = {e15653},
+  doi     = {10.2196/15653},
+  pmid    = {32706721},
+  note    = {关于 CDS 警报覆盖（override）适当性的系统综述，提供本领域"警报覆盖"研究现状的背景，而非预测模型本身。},
+}
+
+% ---------- C 支：EHR 序列 / Transformer ----------
+
+@inproceedings{choi2016doctor,
+  author    = {Choi, Edward and Bahadori, Mohammad Taha and Schuetz, Andy and Stewart, Walter F. and Sun, Jimeng},
+  title     = {Doctor {AI}: Predicting Clinical Events via Recurrent Neural Networks},
+  booktitle = {Proceedings of the 1st Machine Learning for Healthcare Conference},
+  series    = {Proceedings of Machine Learning Research},
+  volume    = {56},
+  pages     = {301--318},
+  year      = {2016},
+  note      = {也见 arXiv:1511.05942；260K 患者、8 年纵向数据；differential diagnosis recall@30 最高 79\%。},
+}
+
+@article{li2020behrt,
+  author  = {Li, Yikuan and Rao, Shishir and Solares, Jos{\'e} Roberto Ayala and Hassaine, Abdelaali and Ramakrishnan, Rema and Canoy, Dexter and Zhu, Yajie and Rahimi, Kazem and Salimi-Khorshidi, Gholamreza},
+  title   = {{BEHRT}: Transformer for Electronic Health Records},
+  journal = {Scientific Reports},
+  year    = {2020},
+  volume  = {10},
+  number  = {1},
+  pages   = {7155},
+  doi     = {10.1038/s41598-020-62922-y},
+  pmid    = {32346050},
+  note    = {近 160 万人数据，同时预测未来就诊中 301 种疾病；较既有 SOTA 深度 EHR 模型平均精度提升 8.0--13.2\%。},
+}
+
+@article{rasmy2021medbert,
+  author  = {Rasmy, Laila and Xiang, Yang and Xie, Ziqian and Tao, Cui and Zhi, Degui},
+  title   = {Med-{BERT}: pretrained contextualized embeddings on large-scale structured electronic health records for disease prediction},
+  journal = {{NPJ} Digital Medicine},
+  year    = {2021},
+  volume  = {4},
+  number  = {1},
+  pages   = {86},
+  doi     = {10.1038/s41746-021-00455-y},
+  pmid    = {34017034},
+  note    = {28{,}490{,}650 患者预训练；下游两个疾病预测任务 AUC 提升 1.21--6.14\%，小样本微调场景下最高可提升 20\%以上。},
+}
+
+% ---------- D 支：神经生存分析 / 竞争风险 ----------
+
+@article{lee2018deephit,
+  author  = {Lee, Changhee and Zame, William and Yoon, Jinsung and van der Schaar, Mihaela},
+  title   = {{DeepHit}: A Deep Learning Approach to Survival Analysis With Competing Risks},
+  journal = {Proceedings of the {AAAI} Conference on Artificial Intelligence},
+  year    = {2018},
+  volume  = {32},
+  number  = {1},
+  doi     = {10.1609/aaai.v32i1.11842},
+  note    = {以离散时间 + 单网络多竞争风险联合似然与排序损失建模，直接学习生存分布而不假设潜在随机过程；是本项目自撤/他撤竞争风险联合建模的直接方法骨架。},
+}
+
+@article{lee2020dynamicdeephit,
+  author  = {Lee, Changhee and Yoon, Jinsung and van der Schaar, Mihaela},
+  title   = {Dynamic-{DeepHit}: A Deep Learning Approach for Dynamic Survival Analysis With Competing Risks Based on Longitudinal Data},
+  journal = {{IEEE} Transactions on Biomedical Engineering},
+  year    = {2020},
+  volume  = {67},
+  number  = {1},
+  pages   = {122--133},
+  doi     = {10.1109/TBME.2019.2909027},
+  pmid    = {30951460},
+  note    = {DeepHit 的动态/纵向扩展，随访数据更新时动态刷新竞争风险生存预测；英国 Cystic Fibrosis Registry 5883 名患者验证。无法合法免费获取全文 PDF（IEEE Xplore 付费墙，Unpaywall 确认 is\_oa=false），仅记录摘要与元数据。},
+}
+
+@article{gensheimer2019scalable,
+  author  = {Gensheimer, Michael F. and Narasimhan, Balasubramanian},
+  title   = {A scalable discrete-time survival model for neural networks},
+  journal = {{PeerJ}},
+  year    = {2019},
+  volume  = {7},
+  pages   = {e6257},
+  doi     = {10.7717/peerj.6257},
+  pmid    = {30701130},
+  note    = {软件/方法名为 nnet-survival；离散时间风险模型，用小批量 SGD 训练，可扩展到不能全部放入内存的大数据集；发表版 PDF 被 PeerJ 反爬限制阻挡，改用作者预印本 arXiv:1805.00917 的 PDF（内容一致）。},
+}
+
+@article{katzman2018deepsurv,
+  author  = {Katzman, Jared L. and Shaham, Uri and Cloninger, Alexander and Bates, Jonathan and Jiang, Tingting and Kluger, Yuval},
+  title   = {{DeepSurv}: personalized treatment recommender system using a Cox proportional hazards deep neural network},
+  journal = {{BMC} Medical Research Methodology},
+  year    = {2018},
+  volume  = {18},
+  number  = {1},
+  pages   = {24},
+  doi     = {10.1186/s12874-018-0482-1},
+  pmid    = {29482517},
+  note    = {深度 Cox 比例风险网络，不显式处理竞争风险，是本项目方法谱系中"单风险"一端的基准。},
+}
+
+@article{fine1999proportional,
+  author  = {Fine, Jason P. and Gray, Robert J.},
+  title   = {A Proportional Hazards Model for the Subdistribution of a Competing Risk},
+  journal = {Journal of the American Statistical Association},
+  year    = {1999},
+  volume  = {94},
+  number  = {446},
+  pages   = {496--509},
+  doi     = {10.1080/01621459.1999.10474144},
+  note    = {竞争风险经典论文，subdistribution hazard 的奠基性工作；本项目"自撤/他撤"竞争风险联合建模的统计学起点。JASA 不属于 PubMed/MEDLINE 收录范围，故无 PubMed 摘要；期刊为订阅制，未能合法获取免费 PDF（Unpaywall 确认 is\_oa=false），仅记录元数据。},
+}
+
+% ---------- E 支：数据集与工具 ----------
+
+@article{johnson2023mimiciv,
+  author  = {Johnson, Alistair E. W. and Bulgarelli, Lucas and Shen, Lu and Gayles, Alvin and Shammout, Ayad and Horng, Steven and Pollard, Tom J. and Hao, Sicheng and Moody, Benjamin and Gow, Brian and Lehman, Li-wei H. and Celi, Leo A. and Mark, Roger G.},
+  title   = {{MIMIC-IV}, a freely accessible electronic health record dataset},
+  journal = {Scientific Data},
+  year    = {2023},
+  volume  = {10},
+  number  = {1},
+  pages   = {1},
+  doi     = {10.1038/s41597-022-01899-x},
+  pmid    = {36596836},
+  note    = {本项目使用的数据集来源论文（MIMIC-IV v3.1 为其后续版本发布）。存在两篇 Author Correction（DOI 10.1038/s41597-023-01945-2、10.1038/s41597-023-02136-9），未单独收录。},
+}
+
+@inproceedings{ke2017lightgbm,
+  author    = {Ke, Guolin and Meng, Qi and Finley, Thomas and Wang, Taifeng and Chen, Wei and Ma, Weidong and Ye, Qiwei and Liu, Tie-Yan},
+  title     = {{LightGBM}: A Highly Efficient Gradient Boosting Decision Tree},
+  booktitle = {Advances in Neural Information Processing Systems},
+  volume    = {30},
+  year      = {2017},
+  note      = {NeurIPS 2017 proceedings 论文，无 Crossref DOI 登记；本项目梯度提升树基线方法。},
+}

@@ -1,0 +1,130 @@
+
+==============================================================================
+[s06a_build_seq_synth] 开始 2026-09-21 19:39:55  python=3.11.0  host-cores=20
+seq_len=256  输出目录=C:\Users\root\AppData\Local\Temp\claude\H--AIAUTORESEARCH-MIMICIVAUTOIDEA\a92126aa-ecf1-495e-aabc-34deb30f6fca\scratchpad\synthdata\seq
+[1/5] 读 labels 与 splits …
+  labels 行数=851786  in_cohort=851786  进入序列=851786
+[2/5] 对齐 features（按 key）…
+  features 行序不同，已建映射；labels 中无对应特征的行=0（剔出序列）
+  类别字段 19 个：['f_admission_location', 'f_admission_type', 'f_age_bin', 'f_anchor_year_group', 'f_careunit', 'f_curr_service', 'f_detail_00', 'f_detail_01', 'f_detail_02', 'f_detail_03', 'f_detail_04', 'f_dow', 'f_gender', 'f_hour', 'f_insurance', 'f_order_subtype', 'f_order_type', 'f_prov_n_prior', 'f_transaction_type']
+  数值字段 6 个：['f_dt_prev_order_h', 'f_n_prior_orders', 'f_prior_disc_rate', 'f_prov_prior_disc_rate', 'f_prov_prior_self_rate', 'f_since_admit_h']
+[3/5] 统计词表大小与 train 标准化参数（均值方差**只用 train**）…
+  tokens dtype = int16  最大词表 = 810
+  数值缺失指示通道 1 个：['f_dt_prev_order_h']
+  n_cat_field=19  n_num_field=7
+[4/5] train: 行数=674221  住院数=3198  块数=4471  分片=3
+  片 1/3: 块 1488  累计 1488/4471  用时 1.1s
+  片 2/3: 块 1510  累计 2998/4471  用时 1.2s
+  片 3/3: 块 1473  累计 4471/4471  用时 1.0s
+  train 完成：块=4471 总位置=1144576 有效位置(y13>=0)=672885 padding=41.09%
+[4/5] val: 行数=91488  住院数=424  块数=598  分片=3
+  片 1/3: 块 198  累计 198/598  用时 0.5s
+  片 2/3: 块 191  累计 389/598  用时 0.5s
+  片 3/3: 块 209  累计 598/598  用时 0.5s
+  val 完成：块=598 总位置=153088 有效位置(y13>=0)=91330 padding=40.24%
+[4/5] test: 行数=86077  住院数=419  块数=576  分片=3
+  片 1/3: 块 196  累计 196/576  用时 0.5s
+  片 2/3: 块 188  累计 384/576  用时 0.5s
+  片 3/3: 块 192  累计 576/576  用时 0.5s
+  test 完成：块=576 总位置=147456 有效位置(y13>=0)=85914 padding=41.63%
+→ meta 已写 C:\Users\root\AppData\Local\Temp\claude\H--AIAUTORESEARCH-MIMICIVAUTOIDEA\a92126aa-ecf1-495e-aabc-34deb30f6fca\scratchpad\synthdata\seq\meta.json
+[完成] 用时 8.6s
+
+==============================================================================
+[s06a_build_seq_synth] 开始 2026-09-21 19:46:46  python=3.11.0  host-cores=20
+seq_len=256  输出目录=C:\Users\root\AppData\Local\Temp\claude\H--AIAUTORESEARCH-MIMICIVAUTOIDEA\a92126aa-ecf1-495e-aabc-34deb30f6fca\scratchpad\synthdata\seq
+[1/5] 读 labels 与 splits …
+  labels 行数=851786  in_cohort=851786  进入序列=851786
+[2/5] 对齐 features（按 key）…
+  features 行序不同，已建映射；labels 中无对应特征的行=0（剔出序列）
+  类别字段 18 个：['f_admission_location', 'f_admission_type', 'f_age_bin', 'f_anchor_year_group', 'f_careunit', 'f_curr_service', 'f_detail_00', 'f_detail_01', 'f_detail_02', 'f_detail_03', 'f_detail_04', 'f_dow', 'f_gender', 'f_hour', 'f_insurance', 'f_order_subtype', 'f_order_type', 'f_transaction_type']
+  数值字段 7 个：['f_dt_prev_order_h', 'f_n_prior_orders', 'f_prior_disc_rate', 'f_prov_n_prior', 'f_prov_prior_disc_rate', 'f_prov_prior_self_rate', 'f_since_admit_h']
+[3/5] 统计词表大小与 train 标准化参数（均值方差**只用 train**）…
+  tokens dtype = int16  最大词表 = 810
+  数值缺失指示通道 1 个：['f_dt_prev_order_h']
+  n_cat_field=18  n_num_field=8
+[4/5] train: 行数=674221  住院数=3198  块数=4471  分片=3
+  片 1/3: 块 1488  累计 1488/4471  用时 0.2s
+  片 2/3: 块 1510  累计 2998/4471  用时 0.2s
+  片 3/3: 块 1473  累计 4471/4471  用时 0.2s
+  train 完成：块=4471 总位置=1144576 有效位置(y13>=0)=672885 padding=41.09%
+[4/5] val: 行数=91488  住院数=424  块数=598  分片=3
+  片 1/3: 块 198  累计 198/598  用时 0.1s
+  片 2/3: 块 191  累计 389/598  用时 0.1s
+  片 3/3: 块 209  累计 598/598  用时 0.1s
+  val 完成：块=598 总位置=153088 有效位置(y13>=0)=91330 padding=40.24%
+[4/5] test: 行数=86077  住院数=419  块数=576  分片=3
+  片 1/3: 块 196  累计 196/576  用时 0.1s
+  片 2/3: 块 188  累计 384/576  用时 0.1s
+  片 3/3: 块 192  累计 576/576  用时 0.1s
+  test 完成：块=576 总位置=147456 有效位置(y13>=0)=85914 padding=41.63%
+→ meta 已写 C:\Users\root\AppData\Local\Temp\claude\H--AIAUTORESEARCH-MIMICIVAUTOIDEA\a92126aa-ecf1-495e-aabc-34deb30f6fca\scratchpad\synthdata\seq\meta.json
+[完成] 用时 2.0s
+
+==============================================================================
+[s06a_build_seq_synth] 开始 2026-09-21 19:54:51  python=3.11.0  host-cores=20
+seq_len=256  输出目录=C:\Users\root\AppData\Local\Temp\claude\H--AIAUTORESEARCH-MIMICIVAUTOIDEA\a92126aa-ecf1-495e-aabc-34deb30f6fca\scratchpad\synthdata\seq
+features 指纹 size=37192468 mtime_ns=1789990791830976300
+[1/5] 读 labels 与 splits …
+  labels 行数=851786  in_cohort=851786  进入序列=851786
+[2/5] 对齐 features（按 key）…
+  features 行序不同，已建映射；labels 中无对应特征的行=0（剔出序列）
+  类别字段 18 个：['f_admission_location', 'f_admission_type', 'f_age_bin', 'f_anchor_year_group', 'f_careunit', 'f_curr_service', 'f_detail_00', 'f_detail_01', 'f_detail_02', 'f_detail_03', 'f_detail_04', 'f_dow', 'f_gender', 'f_hour', 'f_insurance', 'f_order_subtype', 'f_order_type', 'f_transaction_type']
+  数值字段 7 个：['f_dt_prev_order_h', 'f_n_prior_orders', 'f_prior_disc_rate', 'f_prov_n_prior', 'f_prov_prior_disc_rate', 'f_prov_prior_self_rate', 'f_since_admit_h']
+[3/5] 统计词表大小与 train 标准化参数（均值方差**只用 train**）…
+  tokens dtype = int16  最大词表 = 810
+  数值缺失指示通道 1 个：['f_dt_prev_order_h']
+  n_cat_field=18  n_num_field=8
+[4/5] train: 行数=674221  住院数=3198  块数=4471  分片=3
+  片 1/3: 块 1488  累计 1488/4471  用时 0.2s
+  片 2/3: 块 1510  累计 2998/4471  用时 0.2s
+  片 3/3: 块 1473  累计 4471/4471  用时 0.2s
+  train 完成：块=4471 总位置=1144576 有效位置(y13>=0)=672885 padding=41.09%
+[4/5] val: 行数=91488  住院数=424  块数=598  分片=3
+  片 1/3: 块 198  累计 198/598  用时 0.1s
+  片 2/3: 块 191  累计 389/598  用时 0.1s
+  片 3/3: 块 209  累计 598/598  用时 0.1s
+  val 完成：块=598 总位置=153088 有效位置(y13>=0)=91330 padding=40.24%
+[4/5] test: 行数=86077  住院数=419  块数=576  分片=3
+  片 1/3: 块 196  累计 196/576  用时 0.1s
+  片 2/3: 块 188  累计 384/576  用时 0.1s
+  片 3/3: 块 192  累计 576/576  用时 0.1s
+  test 完成：块=576 总位置=147456 有效位置(y13>=0)=85914 padding=41.63%
+→ meta 已写 C:\Users\root\AppData\Local\Temp\claude\H--AIAUTORESEARCH-MIMICIVAUTOIDEA\a92126aa-ecf1-495e-aabc-34deb30f6fca\scratchpad\synthdata\seq\meta.json
+[完成] 用时 2.0s
+
+==============================================================================
+[s06a_build_seq_synth] 开始 2026-09-21 19:54:54  python=3.11.0  host-cores=20
+seq_len=256  输出目录=C:\Users\root\AppData\Local\Temp\claude\H--AIAUTORESEARCH-MIMICIVAUTOIDEA\a92126aa-ecf1-495e-aabc-34deb30f6fca\scratchpad\synthdata\seq
+features 指纹 size=37192468 mtime_ns=1789990791830976300
+[1/5] 读 labels 与 splits …
+  labels 行数=851786  in_cohort=851786  进入序列=851786
+[2/5] 对齐 features（按 key）…
+  features 行序不同，已建映射；labels 中无对应特征的行=0（剔出序列）
+  类别字段 18 个：['f_admission_location', 'f_admission_type', 'f_age_bin', 'f_anchor_year_group', 'f_careunit', 'f_curr_service', 'f_detail_00', 'f_detail_01', 'f_detail_02', 'f_detail_03', 'f_detail_04', 'f_dow', 'f_gender', 'f_hour', 'f_insurance', 'f_order_subtype', 'f_order_type', 'f_transaction_type']
+  数值字段 7 个：['f_dt_prev_order_h', 'f_n_prior_orders', 'f_prior_disc_rate', 'f_prov_n_prior', 'f_prov_prior_disc_rate', 'f_prov_prior_self_rate', 'f_since_admit_h']
+[3/5] 统计词表大小与 train 标准化参数（均值方差**只用 train**）…
+  tokens dtype = int16  最大词表 = 810
+  数值缺失指示通道 1 个：['f_dt_prev_order_h']
+  n_cat_field=18  n_num_field=8
+[4/5] train: 行数=674221  住院数=3198  块数=4471  分片=3
+  片 1/3: 块 1488  累计 1488/4471  用时 0.3s
+  片 2/3: 块 1510  累计 2998/4471  用时 0.2s
+  片 3/3: 块 1473  累计 4471/4471  用时 0.2s
+  train 完成：块=4471 总位置=1144576 有效位置(y13>=0)=672885 padding=41.09%
+[4/5] val: 行数=91488  住院数=424  块数=598  分片=3
+  片 1/3: 块 198  累计 198/598  用时 0.1s
+  片 2/3: 块 191  累计 389/598  用时 0.1s
+  片 3/3: 块 209  累计 598/598  用时 0.1s
+  val 完成：块=598 总位置=153088 有效位置(y13>=0)=91330 padding=40.24%
+[4/5] test: 行数=86077  住院数=419  块数=576  分片=3
+  片 1/3: 块 196  累计 196/576  用时 0.1s
+  片 2/3: 块 188  累计 384/576  用时 0.1s
+Traceback (most recent call last):
+  File "H:\AIAUTORESEARCH\Project\src\s06a_build_seq.py", line 465, in <module>
+    main()
+  File "H:\AIAUTORESEARCH\Project\src\s06a_build_seq.py", line 340, in main
+    check_feat()
+  File "H:\AIAUTORESEARCH\Project\src\s06a_build_seq.py", line 178, in check_feat
+    raise RuntimeError(
+RuntimeError: features.parquet 在构建过程中被改写了（s03 又跑了一遍？）。已写出的分片用的是旧版特征，会混版——本次构建作废，请等新文件稳定后整体重跑。

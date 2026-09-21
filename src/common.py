@@ -109,6 +109,46 @@ def col_np(path: Path, name: str, fill=-1, dictionary: bool = False):
     return codes, names
 
 
+SHIFT_KEY = 24          # key = subject_id << 24 | poe_seq
+T_NEVER = np.iinfo(np.int64).max     # 「从未被撤销」的哨兵时刻
+
+
+def resolve_disc_time(poe_path: Path | None = None):
+    """解析撤销指针，返回每条医嘱**被撤销那一刻的精确 epoch 秒**（int64；未撤为 T_NEVER）。
+
+    为什么必须有这个函数，而不能从 `labels.delay_h` 反推
+    ----------------------------------------------------
+    `delay_h` 是 float32。反推 `t_disc = ordertime + delay_h * 3600` 有亚秒级误差，
+    而 **MIMIC 的时间戳是分钟粒度**——大量医嘱共享同一个时刻。
+    于是亚秒误差恰好落在「t_disc 是否等于某条医嘱的 t₀」这个边界上，把比较结果翻过去。
+
+    实测（`t01_leak_test` 抓到的）：反推法让「截至 t₀ 已发生的撤销数」在 **16.7%** 的行上差 1，
+    并造出 38 行「已撤数 > 此前下达数」这种逻辑上不可能的结果。
+    ⇒ 凡是要拿撤销时刻和别的时间戳做**精确比较**的地方，一律用本函数，不要反推。
+
+    返回 (t_disc, key, n_resolved)：t_disc 与 poe 逐行对齐，key = subject_id<<24|poe_seq。
+    """
+    import pyarrow.parquet as pq
+    p = poe_path or (DATA / "poe.parquet")
+    n = pq.ParquetFile(p).metadata.num_rows
+    subj = col_np(p, "subject_id").astype(np.int64)
+    seq = col_np(p, "poe_seq").astype(np.int64)
+    otime = col_np(p, "ordertime").astype(np.int64)
+    by_seq = col_np(p, "discontinued_by_seq").astype(np.int64)
+    key = (subj << SHIFT_KEY) | seq
+    order = None if bool(np.all(np.diff(key) > 0)) else np.argsort(key, kind="stable")
+    ks = key if order is None else key[order]
+    has = by_seq >= 0
+    tk = (subj[has] << SHIFT_KEY) | by_seq[has]
+    pos = np.clip(np.searchsorted(ks, tk), 0, n - 1)
+    hit = ks[pos] == tk
+    src = np.flatnonzero(has)[hit]
+    dst = pos[hit] if order is None else order[pos[hit]]
+    t_disc = np.full(n, T_NEVER, dtype=np.int64)
+    t_disc[src] = otime[dst]          # ← 精确取被撤销那一刻的整数时间戳，不做任何浮点运算
+    return t_disc, key, int(len(src))
+
+
 def stream(table: str, usecols=None, chunksize: int = 500_000, dtype=None,
            max_chunks: int | None = None):
     """流式读 zip 内 CSV，逐块 yield DataFrame。不解压、不落地。"""

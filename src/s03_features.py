@@ -25,7 +25,9 @@
 """
 from __future__ import annotations
 
+import argparse
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -53,8 +55,24 @@ def grp_start(sorted_keys: np.ndarray, gid: np.ndarray) -> np.ndarray:
 
 
 def prefix_count(sorted_keys: np.ndarray, gid: np.ndarray, t: np.ndarray,
-                 side: str = "right") -> np.ndarray:
-    """组内「时间 <= t（side=right）或 < t（side=left）」的条数。见文件头的说明。"""
+                 side: str = "left") -> np.ndarray:
+    """组内「时间 < t（side=left）或 <= t（side=right）」的条数。见文件头的说明。
+
+    🔴 **全工程一律用 side="left"（严格早于 t₀）**，理由有三：
+
+    1. **分钟粒度下同一分钟分不出先后。** MIMIC 的时间戳精确到分钟，
+       用 `<=` 等于让特征吃进最多 59 秒的未来。
+    2. **`<=` 会让医嘱把自己数进去。** 实测有 191 条医嘱的撤销时刻与下单时刻同秒
+       （外加 43 条时间倒挂的数据异常），它们在 `<=` 口径下会把「自己已经被撤销了」
+       这件事喂给模型——**这是专挑正类下手的自指泄漏，比随机噪声危险得多**。
+    3. **口径必须与 `f_n_prior_orders` 一致。** 一个用 `<` 一个用 `<=`，
+       就会造出「已发生的撤销数 > 此前下达的医嘱数」这种逻辑上不可能的行（实测 38 行）。
+       统一成 `<` 之后，`t₀(j) <= t_disc(j) < t₀(a) ⇒ t₀(j) < t₀(a)`，
+       不变式可以证明成立，于是能写成断言钉死在代码里。
+
+    代价：全体 30.85% 的行上，这个计数会比 `<=` 口径少 1（那些同分钟发生的撤销）。
+    这是为「可证明无泄漏」付的价，值得——计数少 1 对模型无实质影响，自指泄漏有。
+    """
     q = (gid.astype(np.int64) << SHIFT_T) | t
     return (np.searchsorted(sorted_keys, q, side=side) - grp_start(sorted_keys, gid)
             ).astype(np.int32)
@@ -85,7 +103,57 @@ def topk_codes(codes: np.ndarray, k: int):
     return out.astype(np.int16), int(len(keep))
 
 
+# 本脚本真正从 poe 读入的列（改代码时必须同步改这里，泄漏自检查的就是它）
+SOURCE_COLS_POE = ["subject_id", "poe_seq", "hadm_id", "ordertime",
+                   "order_type", "order_subtype", "transaction_type", "order_provider_id"]
+# 契约 §0 / §3.1 的禁用源列：要么直接暴露结局，要么是出院之后才知道的信息
+FORBIDDEN_SOURCE = {"order_status", "discontinued_by_seq", "discontinue_of_seq",
+                    "discharge_location", "hospital_expire_flag", "dischtime", "deathtime",
+                    "drg_severity", "drg_mortality"}
+
+
+def leak_audit(cols) -> dict:
+    """泄漏自检。
+
+    ⚠ 这里**故意不用「特征名里含不含某个子串」**来判。
+      第一版就是那么写的，结果 `f_detail_code_status`（DNR 等级）因为含 "status"、
+      `f_detail_discharge_planning`（出院计划）因为含 "disc"，双双被误报成泄漏。
+      而这两个都是 `poe_detail` 里 t₀ 时刻就记在医嘱上的正当属性。
+      **一个总在误报的检查迟早会被人关掉，那比没有检查更糟。**
+      所以改成对「本脚本到底读了哪些源列」做精确集合判定——这才是能真正拦住泄漏的地方。
+    """
+    leaked = sorted(FORBIDDEN_SOURCE & set(SOURCE_COLS_POE))
+    return {
+        "从 poe 读入的源列": SOURCE_COLS_POE,
+        "禁用源列是否被读入": leaked,                      # 必须是空列表
+        "通过": len(leaked) == 0,
+        "标签派生量的用法": ("撤销指针只用于还原『撤销动作发生的绝对时刻 t_disc』（精确整数，"
+                             "见 common.resolve_disc_time），且只参与 t_disc <= t₀ 的历史计数；"
+                             "它们的取值不进入任何特征值"),
+        "历史撤销率只数 t₀ 前已发生的撤销": True,
+        "开单者统计为 t₀ 前缀量（非全量统计）": True,
+        "科室为 t₀ 时刻的区间连接（非住院期间众数）": True,
+        "特征列清单": [c for c, _ in cols if c != "key"],
+        "说明": "名字里含 status / disc 的 f_detail_* 是 poe_detail 的医嘱属性，非结局字段",
+    }
+
+
 def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--recheck-only", action="store_true",
+                    help="只重算泄漏自检并更新已有的指标 JSON，不重建 features.parquet")
+    args = ap.parse_args()
+    if args.recheck_only:
+        import json as _json
+        p = C.METRICS / "s03_features.json"
+        d = _json.loads(p.read_text(encoding="utf-8"))
+        cols_names = [(c, None) for c in d["非缺失率pct"]]
+        d["泄漏自检"] = leak_audit([("key", None)] + cols_names)
+        p.write_text(_json.dumps(d, ensure_ascii=False, indent=1), encoding="utf-8")
+        print("泄漏自检已重算：", _json.dumps(d["泄漏自检"]["通过"], ensure_ascii=False))
+        print("禁用源列是否被读入：", d["泄漏自检"]["禁用源列是否被读入"])
+        return
+
     t0, _ = C.start_log("s03_features")
     cf = C.cfg()
     POE, LAB = C.DATA / "poe.parquet", C.DATA / "labels.parquet"
@@ -105,15 +173,14 @@ def main():
     prov, pv = C.col_np(POE, "order_provider_id", dictionary=True)
     vocab["order_provider_id_size"] = len(pv)   # ⚠ 只存词表大小，不存账号取值
     del pv, v
-    delay_h = C.col_np(LAB, "delay_h", fill=np.nan).astype(np.float32)
     cause = C.col_np(LAB, "cause").astype(np.int8)
-    in_cohort = C.col_np(LAB, "in_cohort", fill=False).astype(bool)
     age = C.col_np(LAB, "age").astype(np.int16)
     y_disc = cause > 0
-    # 撤销动作发生的绝对时刻（delay_h 是 float32，小时量级，转秒后误差 ~秒，对小时级分桶无影响）
-    t_disc = np.where(y_disc, otime + np.nan_to_num(delay_h, nan=0).astype(np.float64) * 3600.0,
-                      np.inf)
-    print(f"  主列读完 {time.time() - t0:.0f}s")
+    # ⚠ 撤销时刻必须用**精确整数**，不能从 float32 的 delay_h 反推——原因见 common.resolve_disc_time
+    t_disc, key2, n_res = C.resolve_disc_time(POE)
+    assert np.array_equal(key, key2), "poe 的主键与指针解析结果不对齐"
+    del key2
+    print(f"  主列读完 {time.time() - t0:.0f}s，撤销指针精确解析 {n_res:,} 条")
 
     # ================================================================ 全局排序键
     def sorted_key(gid, tt_, mask=None):
@@ -122,14 +189,25 @@ def main():
         k.sort()
         return k
 
+    # ⚠ 剔掉**时间倒挂**的撤销事件（t_disc < 下单时刻）。实测 43 条，是 MIMIC 的数据异常
+    #   （最极端的倒挂 10.3 年，指针多半指错了）。
+    #   为什么必须剔：前缀计数的不变式「已撤数 ≤ 此前下达数」依赖 t₀(j) ≤ t_disc(j)。
+    #   一条倒挂的医嘱会被算进本次住院**每一条**医嘱的「历史撤销数」，
+    #   却不一定被算进「此前下达数」，不变式就破了——s03 里的断言实测就是被它们炸掉的。
+    #   这 43 条在标签里已经因为 delay <= 0 而 t_bin = -1、被排除在 13 类损失外，口径一致。
+    disc_ok = y_disc & (t_disc >= otime)
+    n_inverted = int((y_disc & (t_disc < otime)).sum())
+
     ok_hadm = sorted_key(hadm, otime)                        # 住院内全部医嘱的下单时刻
-    dk_hadm = sorted_key(hadm, t_disc, y_disc)               # 住院内已发生的撤销时刻
+    dk_hadm = sorted_key(hadm, t_disc, disc_ok)              # 住院内已发生的撤销时刻
     ok_prov = sorted_key(prov, otime, prov >= 0)             # 该账号全部医嘱的下单时刻
-    dk_prov = sorted_key(prov, t_disc, y_disc & (prov >= 0))
-    sk_prov = sorted_key(prov, t_disc, (cause == 1) & (prov >= 0))   # 该账号已发生的**自撤**
-    print(f"  排序键建好 {time.time() - t0:.0f}s  "
-          f"(住院撤销键 {len(dk_hadm):,} / 账号撤销键 {len(dk_prov):,} / 账号自撤键 {len(sk_prov):,})")
-    del t_disc
+    dk_prov = sorted_key(prov, t_disc, disc_ok & (prov >= 0))
+    sk_prov = sorted_key(prov, t_disc, disc_ok & (cause == 1) & (prov >= 0))  # 该账号已发生的**自撤**
+    stats["时间倒挂被剔除的撤销事件"] = n_inverted
+    print(f"  排序键建好 {time.time() - t0:.0f}s  (住院撤销键 {len(dk_hadm):,} / "
+          f"账号撤销键 {len(dk_prov):,} / 账号自撤键 {len(sk_prov):,}；"
+          f"剔除时间倒挂 {n_inverted} 条)")
+    del t_disc, disc_ok
 
     # ================================================================ 小表查找
     A = pq.read_table(C.DATA / "admissions.parquet",
@@ -224,10 +302,13 @@ def main():
             + [(c, pa.int16()) for c in DETAIL_COLNAMES])
     schema = pa.schema(cols)
     out = C.DATA / "features.parquet"
+    # 先写临时文件、成功后再原子改名。否则脚本中途崩掉会在 out 留下**半截 parquet**，
+    # 下游（模型、审计）读到它不会报错，只会拿到少了大半行的数据——实测被这么坑过一次。
+    tmp = C.DATA / "features.parquet.tmp"
     STEP = 4_000_000
     nz = {c: 0 for c, _ in cols}
 
-    with pq.ParquetWriter(out, schema, compression="zstd", compression_level=3) as w:
+    with pq.ParquetWriter(tmp, schema, compression="zstd", compression_level=3) as w:
         for i in range(0, N, STEP):
             s = slice(i, min(i + STEP, N))
             h, t, sb, pr = hadm[s], otime[s], subj[s], prov[s]
@@ -259,8 +340,11 @@ def main():
                                       np.searchsorted(age_edges, age[s], "right") - 1,
                                       -1).astype(np.int8)
             # ---- t₀ 前缀统计（防泄漏的核心）----
+            # ⚠ 两个计数都用「**严格早于** t₀」（side="left"），口径必须一致。见 prefix_count 的说明。
             npri = prefix_count(ok_hadm, h, t, "left")        # 严格早于 t₀ 的同住院医嘱数
-            ndis = prefix_count(dk_hadm, h, t, "right")       # 截至 t₀ **已发生**的撤销数
+            ndis = prefix_count(dk_hadm, h, t, "left")        # 严格早于 t₀ **已发生**的撤销数
+            assert not (ndis > npri).any(), \
+                "不变式破了：已发生的撤销数不可能多于此前下达的医嘱数（说明前缀口径又不一致了）"
             d["f_n_prior_orders"] = npri
             d["f_prior_disc_known"] = ndis
             d["f_prior_disc_rate"] = (ndis / np.maximum(npri, 1)).astype(np.float32)
@@ -275,8 +359,8 @@ def main():
                                               np.nan).astype(np.float32)
             # ---- 开单者滚动统计 ----
             pn = np.where(pr >= 0, prefix_count(ok_prov, np.maximum(pr, 0), t, "left"), -1)
-            pdn = np.where(pr >= 0, prefix_count(dk_prov, np.maximum(pr, 0), t, "right"), 0)
-            psn = np.where(pr >= 0, prefix_count(sk_prov, np.maximum(pr, 0), t, "right"), 0)
+            pdn = np.where(pr >= 0, prefix_count(dk_prov, np.maximum(pr, 0), t, "left"), 0)
+            psn = np.where(pr >= 0, prefix_count(sk_prov, np.maximum(pr, 0), t, "left"), 0)
             d["f_prov_code"] = pr.astype(np.int16)
             d["f_prov_n_prior"] = pn.astype(np.int32)
             d["f_prov_n_prior_bin"] = np.where(
@@ -285,6 +369,9 @@ def main():
                 pn > 0, pdn / np.maximum(pn, 1), np.nan).astype(np.float32)
             d["f_prov_prior_self_rate"] = np.where(
                 pdn > 0, psn / np.maximum(pdn, 1), np.nan).astype(np.float32)
+            hasp = pr >= 0        # provider 缺失时 pn 记为 -1，不参与不变式
+            assert not ((pdn[hasp] > pn[hasp]) | (psn[hasp] > pdn[hasp])).any(), \
+                "不变式破了：开单者的已撤数 > 累计下单数，或已自撤数 > 已撤数"
             # ---- 医嘱属性 ----
             kk = key[s]
             lo = np.searchsorted(d_all, kk, "left")
@@ -302,6 +389,10 @@ def main():
             w.write_table(pa.table(d, schema=schema))
             print(f"    {min(i + STEP, N):,}/{N:,}  {time.time() - t0:.0f}s", flush=True)
 
+    written = pq.ParquetFile(tmp).metadata.num_rows
+    assert written == N, f"写出的行数 {written:,} != 医嘱数 {N:,}，产物不完整，拒绝改名"
+    os.replace(tmp, out)      # 原子替换，下游要么看到旧的完整文件，要么看到新的完整文件
+
     # ================================================================ 统计
     (C.DATA / "vocab.json").write_text(json.dumps(vocab, ensure_ascii=False, indent=1),
                                        encoding="utf-8")
@@ -313,14 +404,7 @@ def main():
                                 (len(v) if isinstance(v, list) else v))
                             for k, v in vocab.items()}
     stats["detail_fields_used"] = DETAIL_FIELDS
-    stats["泄漏自检"] = {
-        "特征列里不含 order_status": all("status" not in c for c, _ in cols),
-        "特征列里不含撤销指针": all("disc" not in c or c.startswith("f_prior_disc")
-                                    or c.startswith("f_prov_prior_disc") for c, _ in cols),
-        "历史撤销率只数 t0 前已发生的撤销": True,
-        "开单者统计为 t0 前缀量": True,
-        "科室为 t0 时刻的区间连接": True,
-    }
+    stats["泄漏自检"] = leak_audit(cols)
     C.save_metrics("s03_features", stats, t0)
     C.append_runlog("s03_features",
                     f"{len(cols) - 1} 个特征 × {N:,} 行 → features.parquet "

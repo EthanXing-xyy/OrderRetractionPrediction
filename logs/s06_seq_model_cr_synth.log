@@ -1,0 +1,95 @@
+
+==============================================================================
+[s06_seq_model_cr_synth] 开始 2026-09-21 19:41:05  python=3.11.0  host-cores=20
+变体=transformer_cr  device=cuda  batch=32  epochs=1  lr=0.0003  amp=torch.bfloat16
+seq_len=256  n_cat=19  n_num=7  词表合计=3214
+参数量 7.28 M（其中 embedding 0.96 M）
+train 块 4471（全量 4471）  每 epoch 140 步
+H:\AIAUTORESEARCH\Project\src\s06_seq_model.py:664: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\torch\csrc\autograd\generated\python_variable_methods.cpp:837.)
+  run += float(loss) * n
+  ep0 step 50/140  loss=1.00335  lr=2.42e-04  7.87 step/s  已用 0.1 min
+  ep0 step 100/140  loss=0.89803  lr=8.83e-05  11.10 step/s  已用 0.2 min
+[epoch 0] 用时 0.3 min  val={'loss': 0.8986802325130723, 'n': 91330, 'auprc_rough': 0.19654550845389218, 'auroc_rough': 0.4971837217108901, 'pos_rate': 0.19811671958830615}
+[预测] 读 labels.in_cohort 建查表 …
+  val: 非 padding 位置 91488
+  val: in_cohort 位置 91488（契约 §7 只在 in_cohort 上出预测）
+→ 预测已写 C:\Users\root\AppData\Local\Temp\claude\H--AIAUTORESEARCH-MIMICIVAUTOIDEA\a92126aa-ecf1-495e-aabc-34deb30f6fca\scratchpad\preds\transformer_cr_val.parquet（91488 行）
+  test: 非 padding 位置 86077
+  test: in_cohort 位置 86077（契约 §7 只在 in_cohort 上出预测）
+→ 预测已写 C:\Users\root\AppData\Local\Temp\claude\H--AIAUTORESEARCH-MIMICIVAUTOIDEA\a92126aa-ecf1-495e-aabc-34deb30f6fca\scratchpad\preds\transformer_cr_test.parquet（86077 行）
+[完成] 用时 0.4 min
+
+==============================================================================
+[s06_seq_model_cr_synth] 开始 2026-09-21 19:43:26  python=3.11.0  host-cores=20
+变体=transformer_cr  device=cuda  batch=32  epochs=1  lr=0.0003  amp=torch.bfloat16
+seq_len=256  n_cat=19  n_num=7  词表合计=3214
+参数量 7.28 M（其中 embedding 0.96 M）
+train 块 4471（全量 4471）  每 epoch 140 步
+  ep0 step 100/140  loss=0.94976  lr=8.83e-05  11.73 step/s  已用 0.1 min
+[epoch 0] 用时 0.3 min  val={'loss': 0.898675478368159, 'n': 91330, 'auprc_rough': 0.19740167290635754, 'auroc_rough': 0.49830833970598054, 'pos_rate': 0.19811671958830615}
+[预测] 读 labels.in_cohort 建查表 …
+  val: 非 padding 位置 91488
+  val: in_cohort 位置 91488（契约 §7 只在 in_cohort 上出预测）
+→ 预测已写 C:\Users\root\AppData\Local\Temp\claude\H--AIAUTORESEARCH-MIMICIVAUTOIDEA\a92126aa-ecf1-495e-aabc-34deb30f6fca\scratchpad\preds\transformer_cr_val.parquet（91488 行）
+  test: 非 padding 位置 86077
+  test: in_cohort 位置 86077（契约 §7 只在 in_cohort 上出预测）
+→ 预测已写 C:\Users\root\AppData\Local\Temp\claude\H--AIAUTORESEARCH-MIMICIVAUTOIDEA\a92126aa-ecf1-495e-aabc-34deb30f6fca\scratchpad\preds\transformer_cr_test.parquet（86077 行）
+[完成] 用时 0.4 min
+
+==============================================================================
+[s06_seq_model_cr_synth] 开始 2026-09-21 19:48:23  python=3.11.0  host-cores=20
+变体=transformer_cr  device=cuda  batch=32  epochs=3  lr=0.0003  amp=torch.bfloat16
+seq_len=256  n_cat=18  n_num=8  词表合计=3206
+参数量 7.28 M（其中 embedding 0.95 M）
+train 块 4471（全量 4471）  每 epoch 140 步
+  [bench] {'steps': 20, 'step_per_s': 16.435, 'max_mem_alloc_gib': 0.769, 'max_mem_reserved_gib': 0.855}
+[bench] 显存峰值 0.769 GiB —— 低于 5.0 GiB，可以开全量
+
+==============================================================================
+[s06_seq_model_cr_synth] 开始 2026-09-21 19:48:49  python=3.11.0  host-cores=20
+变体=transformer_cr  device=cuda  batch=32  epochs=1  lr=0.0003  amp=torch.bfloat16
+seq_len=256  n_cat=18  n_num=8  词表合计=3206
+参数量 7.28 M（其中 embedding 0.95 M）
+train 块 44（全量 4471）  每 epoch 2 步
+[epoch 0] 用时 0.3 min  val={'loss': 1.6630855798721313, 'n': 1937, 'auprc_rough': 0.20364664759698692, 'auroc_rough': 0.5017065772721739, 'pos_rate': 0.20340733092410945}
+[预测] 读 labels.in_cohort 建查表 …
+  val: 非 padding 位置 1671
+  val: in_cohort 位置 1671（契约 §7 只在 in_cohort 上出预测）
+→ 预测已写 C:\Users\root\AppData\Local\Temp\claude\H--AIAUTORESEARCH-MIMICIVAUTOIDEA\a92126aa-ecf1-495e-aabc-34deb30f6fca\scratchpad\preds2\transformer_cr_val.parquet（1671 行）
+  test: 非 padding 位置 1386
+  test: in_cohort 位置 1386（契约 §7 只在 in_cohort 上出预测）
+→ 预测已写 C:\Users\root\AppData\Local\Temp\claude\H--AIAUTORESEARCH-MIMICIVAUTOIDEA\a92126aa-ecf1-495e-aabc-34deb30f6fca\scratchpad\preds2\transformer_cr_test.parquet（1386 行）
+[完成] 用时 0.5 min
+
+==============================================================================
+[s06_seq_model_cr_synth] 开始 2026-09-21 19:49:22  python=3.11.0  host-cores=20
+变体=transformer_cr  device=cuda  batch=32  epochs=3  lr=0.0003  amp=torch.bfloat16
+seq_len=256  n_cat=18  n_num=8  词表合计=3206
+参数量 7.28 M（其中 embedding 0.95 M）
+train 块 4471（全量 4471）  每 epoch 140 步
+载入 transformer_cr_synth_last.pt（epoch 0），只出预测
+[预测] 读 labels.in_cohort 建查表 …
+  val: 非 padding 位置 91488
+  val: in_cohort 位置 91488（契约 §7 只在 in_cohort 上出预测）
+→ 预测已写 C:\Users\root\AppData\Local\Temp\claude\H--AIAUTORESEARCH-MIMICIVAUTOIDEA\a92126aa-ecf1-495e-aabc-34deb30f6fca\scratchpad\preds3\transformer_cr_val.parquet（91488 行）
+  test: 非 padding 位置 86077
+  test: in_cohort 位置 86077（契约 §7 只在 in_cohort 上出预测）
+→ 预测已写 C:\Users\root\AppData\Local\Temp\claude\H--AIAUTORESEARCH-MIMICIVAUTOIDEA\a92126aa-ecf1-495e-aabc-34deb30f6fca\scratchpad\preds3\transformer_cr_test.parquet（86077 行）
+[完成] 用时 0.2 min
+
+==============================================================================
+[s06_seq_model_cr_synth] 开始 2026-09-21 19:53:23  python=3.11.0  host-cores=20
+变体=transformer_cr  device=cuda  batch=32  epochs=1  lr=0.0003  amp=torch.bfloat16
+seq_len=256  n_cat=18  n_num=8  词表合计=3206
+参数量 7.28 M（其中 embedding 0.95 M）
+train 块 4471（全量 4471）  每 epoch 140 步
+[epoch 0] 用时 0.3 min  val={'loss': 0.8987103389144322, 'n': 91330, 'auprc_rough': 0.19563719616575226, 'auroc_rough': 0.49636122489648926, 'pos_rate': 0.19811671958830615}
+[预测] 读 labels.in_cohort 建查表 …
+  val: 非 padding 位置 91488
+  val: in_cohort 位置 91488（契约 §7 只在 in_cohort 上出预测）
+→ 预测已写 C:\Users\root\AppData\Local\Temp\claude\H--AIAUTORESEARCH-MIMICIVAUTOIDEA\a92126aa-ecf1-495e-aabc-34deb30f6fca\scratchpad\preds\transformer_cr_val.parquet（91488 行）
+  test: 非 padding 位置 86077
+  test: in_cohort 位置 86077（契约 §7 只在 in_cohort 上出预测）
+→ 预测已写 C:\Users\root\AppData\Local\Temp\claude\H--AIAUTORESEARCH-MIMICIVAUTOIDEA\a92126aa-ecf1-495e-aabc-34deb30f6fca\scratchpad\preds\transformer_cr_test.parquet（86077 行）
+[完成] 用时 0.4 min

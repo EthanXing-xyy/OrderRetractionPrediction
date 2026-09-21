@@ -59,7 +59,7 @@ def synthetic():
     dk_key = np.sort((gid[y].astype(np.int64) << F.SHIFT_T) | t_disc[y].astype(np.int64))
 
     n_prior = F.prefix_count(ok_key, gid, t, "left")
-    n_disc = F.prefix_count(dk_key, gid, t, "right")
+    n_disc = F.prefix_count(dk_key, gid, t, "left")
 
     check("严格早于 t₀ 的同住院医嘱数", list(n_prior) == [0, 1, 2, 3, 4], f"得到 {list(n_prior)}")
     # 正确答案：t=0 →0；t=100 →0（o0 的撤销在 150，还没发生）；t=200 →1（o0 已撤）；
@@ -71,6 +71,22 @@ def synthetic():
           f"天真={list(naive)} vs 正确={list(n_disc)}")
     check("★正确实现没有被陷阱骗到", not np.array_equal(naive, n_disc))
 
+    # ★陷阱二：同秒撤销的**自指泄漏**。实测真实数据里有 191 条医嘱的撤销时刻与下单时刻同秒。
+    #   用 "<=" 口径，这条医嘱会把「我自己已经被撤销了」数进自己的历史特征——专打正类的泄漏。
+    g3 = np.array([9, 9, 9], dtype=np.int64)
+    t3 = np.array([100, 300, 500], dtype=np.int64)
+    td3 = np.array([200, np.inf, 500], dtype=np.float64)     # 第 3 条：下单即撤，同一秒
+    y3 = np.isfinite(td3)
+    ok3 = np.sort((g3 << F.SHIFT_T) | t3)
+    dk3 = np.sort((g3[y3].astype(np.int64) << F.SHIFT_T) | td3[y3].astype(np.int64))
+    strict = F.prefix_count(dk3, g3, t3, "left")
+    loose = F.prefix_count(dk3, g3, t3, "right")
+    check("★同秒撤销：严格口径不把自己数进去", list(strict) == [0, 1, 1], f"得到 {list(strict)}")
+    check("★同秒撤销：宽松口径确实会自指（所以不能用）", list(loose) == [0, 1, 2],
+          f"得到 {list(loose)}")
+    check("★不变式：已撤数 ≤ 此前下达数（严格口径）",
+          bool((strict <= F.prefix_count(ok3, g3, t3, "left")).all()))
+
     # 多分组互不串味
     gid2 = np.array([7, 7, 8, 8], dtype=np.int64)
     t2 = np.array([0, 100, 50, 150], dtype=np.int64)
@@ -78,8 +94,8 @@ def synthetic():
     y2 = np.isfinite(td2)
     ok2 = np.sort((gid2 << F.SHIFT_T) | t2)
     dk2 = np.sort((gid2[y2].astype(np.int64) << F.SHIFT_T) | td2[y2].astype(np.int64))
-    check("跨分组不串味", list(F.prefix_count(dk2, gid2, t2, "right")) == [0, 1, 0, 0],
-          f"得到 {list(F.prefix_count(dk2, gid2, t2, 'right'))}")
+    check("跨分组不串味", list(F.prefix_count(dk2, gid2, t2, "left")) == [0, 1, 0, 0],
+          f"得到 {list(F.prefix_count(dk2, gid2, t2, 'left'))}")
 
 
 # ============================================================ B. 真实数据
@@ -93,14 +109,21 @@ def on_real(n_adm: int):
 
     hadm = C.col_np(POE, "hadm_id").astype(np.int64)
     otime = C.col_np(POE, "ordertime").astype(np.int64)
-    delay = C.col_np(LAB, "delay_h", fill=np.nan).astype(np.float64)
-    cause = C.col_np(LAB, "cause").astype(np.int8)
+    # ⚠ 用精确整数撤销时刻，不从 float32 的 delay_h 反推（反推法正是第一版被本脚本抓出来的缺陷）
+    t_disc_all, _, _ = C.resolve_disc_time(POE)
     f_npri = C.col_np(FEA, "f_n_prior_orders").astype(np.int64)
     f_ndis = C.col_np(FEA, "f_prior_disc_known").astype(np.int64)
     fkey = C.col_np(FEA, "key").astype(np.int64)
     lkey = C.col_np(LAB, "key").astype(np.int64)
-    check("features 与 labels 的 key 逐行对齐", bool(np.array_equal(fkey, lkey)))
+    aligned = bool(np.array_equal(fkey, lkey))
+    check("features 与 labels 的 key 逐行对齐", aligned,
+          f"features {len(fkey):,} 行 vs labels {len(lkey):,} 行")
     del fkey, lkey
+    if not aligned:
+        # 对不齐就别往下跑了：后面的暴力校验会拿错误的下标去索引，报出来的 IndexError
+        # 会掩盖掉真正的原因（多半是上一次 s03 崩在半路、留下了不完整的 parquet）。
+        print("  ⏭ key 未对齐，跳过后续校验。请先重跑 s03_features.py 生成完整的 features.parquet")
+        return {"中止": "features 与 labels 行数/顺序不一致"}
 
     rng = np.random.default_rng(C.cfg()["seed"])
     uh = np.unique(hadm)
@@ -110,7 +133,7 @@ def on_real(n_adm: int):
     print(f"  抽中 {len(pick):,} 次住院，共 {len(idx):,} 条医嘱")
 
     h_s, t_s = hadm[idx], otime[idx]
-    td_s = np.where(cause[idx] > 0, otime[idx] + np.nan_to_num(delay[idx]) * 3600.0, np.inf)
+    td_s = t_disc_all[idx]          # 未撤销者为 C.T_NEVER（int64 最大值），恒不满足 <= t₀
     bad_n = bad_d = 0
     for hh in pick:                      # 暴力：组内 O(n²)，仅用于校验
         m = np.flatnonzero(h_s == hh)
@@ -119,7 +142,7 @@ def on_real(n_adm: int):
         tt, dd = t_s[m], td_s[m]
         for a in range(m.size):
             bad_n += int(f_npri[idx[m[a]]] != int((tt < tt[a]).sum()))
-            bad_d += int(f_ndis[idx[m[a]]] != int((dd <= tt[a]).sum()))
+            bad_d += int(f_ndis[idx[m[a]]] != int((dd < tt[a]).sum()))   # 严格早于，见 s03.prefix_count
     check("f_n_prior_orders 与暴力法一致", bad_n == 0, f"不一致 {bad_n} 行")
     check("f_prior_disc_known 与暴力法一致", bad_d == 0, f"不一致 {bad_d} 行")
 
