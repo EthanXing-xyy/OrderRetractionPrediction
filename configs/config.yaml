@@ -1,0 +1,65 @@
+# BN5212 医嘱撤销预测 —— 全工程配置
+# 改这里，不要把常数散在各个脚本里。
+
+seed: 20260921
+
+paths:
+  # 原始 MIMIC-IV v3.1 压缩包（不解压，流式读）。也可用环境变量 MIMIC_IV_ZIP 覆盖。
+  mimic_zip: "H:/BN5212/MIMIC_IV.zip"
+  # 中间产物目录。也可用环境变量 BN5212_DATA 覆盖。
+  data: "data"
+
+cohort:
+  min_age: 18            # 成人
+  require_hadm: true     # 必须有住院号
+  min_censor_h: 0.0      # 删失时刻必须严格晚于下单时刻
+
+labels:
+  # 离散时间分桶（小时），左开右闭。6 个桶 × 2 个 cause + 1 个未撤 = 13 类
+  bin_edges_h: [0, 1, 6, 24, 72, 168]
+  n_bins: 6
+  n_causes: 2            # 1=自撤（同一 order_provider_id）  2=他撤
+  # provider 缺失导致 cause 未知的样本：保留在 H1 二分类，排除在 13 类损失外
+  unknown_cause_in_ce: false
+
+split:
+  # 确定性哈希切分，不用随机洗牌，保证任何人重跑一致
+  train_pct: 80
+  val_pct: 10
+  test_pct: 10
+  hash_salt: "bn5212"
+
+features:
+  detail_top_k: 30       # poe_detail 里取频次最高的 K 个 field_name 做特征
+  provider_bins: [0, 10, 100, 1000, 10000, 100000]   # 开单者累计医嘱数分档
+  age_bins: [18, 30, 45, 60, 75, 90]
+
+lgbm:
+  num_leaves: 127
+  learning_rate: 0.05
+  n_estimators: 2000
+  early_stopping_rounds: 100
+  min_child_samples: 200
+  feature_fraction: 0.8
+  bagging_fraction: 0.8
+  bagging_freq: 1
+  num_threads: 18        # 20 核留 2 个给系统
+
+transformer:
+  seq_len: 256
+  d_model: 256
+  n_layers: 8
+  n_heads: 8
+  dropout: 0.1
+  batch_size: 32         # 实测 44.7M 参数 / bs32 / seq256 / fp32 峰值 4.13 GiB（6 GB 卡）
+  lr: 0.0003
+  epochs: 3
+  amp: bf16              # sm_86 支持；开了更省显存
+  grad_clip: 1.0
+
+eval:
+  bootstrap_n: 1000
+  bootstrap_unit: subject_id   # 按患者重抽，不是按行
+  calibration_bins: 10
+  # 预注册判据：双头合成 vs 单头直训
+  prereg_delta_auprc: 0.01

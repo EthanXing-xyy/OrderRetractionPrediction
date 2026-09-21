@@ -1,0 +1,29 @@
+# BN5212 医嘱撤销预测 —— 依赖
+# 本机实测环境：Python 3.11.0 / Windows 11 / RTX 3060 Laptop 6 GB / 20 逻辑核 / 16 GB 内存
+# 版本号是本机跑通的版本，不是下限；组员装新一点的一般也行。
+
+# --- 数据 ---
+numpy==2.4.6
+pandas==3.0.6
+pyarrow==25.0.1
+
+# --- 经典机器学习 ---
+scikit-learn==1.9.1
+scipy==1.17.1
+lightgbm>=4.5
+statsmodels>=0.14
+
+# --- 深度学习（GPU）---
+# torch 请按自己的 CUDA 版本从官网装，本机是：
+#   pip install torch --index-url https://download.pytorch.org/whl/cu128
+torch>=2.6
+
+# --- 可解释性与画图 ---
+shap>=0.46
+matplotlib>=3.9
+
+# --- 杂项 ---
+tqdm>=4.66
+joblib>=1.4
+psutil>=5.9
+PyYAML>=6.0

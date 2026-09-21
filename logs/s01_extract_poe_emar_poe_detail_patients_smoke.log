@@ -1,0 +1,8 @@
+
+==============================================================================
+[s01_extract_poe_emar_poe_detail_patients_smoke] 开始 2026-09-21 19:08:59  python=3.11.0  host-cores=20
+源 zip: H:\BN5212\MIMIC_IV.zip    目标: H:\AIAUTORESEARCH\Project\data
+✓ poe: 1,000,000 行 → poe.parquet  7 MB  5s  指针前缀异常={'discontinue_of_poe_id': 0, 'discontinued_by_poe_id': 0}
+✓ emar: 1,000,000 行 → emar.parquet  7 MB  4s  指针前缀异常={'poe_id': 0}
+✓ poe_detail: 1,000,000 行 → poe_detail.parquet  5 MB  1s  指针前缀异常={}
+✓ patients: 364,627 行 → patients.parquet  1 MB  0s  指针前缀异常={}

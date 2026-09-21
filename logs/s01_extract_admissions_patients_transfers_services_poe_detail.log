@@ -1,0 +1,12 @@
+
+==============================================================================
+[s01_extract_admissions_patients_transfers_services_poe_detail] 开始 2026-09-21 19:10:04  python=3.11.0  host-cores=20
+源 zip: H:\BN5212\MIMIC_IV.zip    目标: H:\AIAUTORESEARCH\Project\data
+✓ admissions: 546,028 行 → admissions.parquet  13 MB  3s  指针前缀异常={}
+✓ patients: 364,627 行 → patients.parquet  1 MB  0s  指针前缀异常={}
+✓ transfers: 2,413,581 行 → transfers.parquet  37 MB  18s  指针前缀异常={}
+✓ services: 593,071 行 → services.parquet  6 MB  7s  指针前缀异常={}
+    poe_detail: 5,000,000 行  9s
+✓ poe_detail: 8,504,982 行 → poe_detail.parquet  43 MB  36s  指针前缀异常={}
+→ 指标已写 results\metrics\s01_extract_admissions_patients_transfers_services_poe_detail.json
+S01 完成，总耗时 68s

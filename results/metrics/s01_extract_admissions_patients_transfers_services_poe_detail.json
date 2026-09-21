@@ -1,0 +1,73 @@
+{
+ "smoke": false,
+ "tables": {
+  "admissions": {
+   "rows": 546028,
+   "parquet_mb": 12.8,
+   "seconds": 3,
+   "poe_seq_max": 0,
+   "ptr_prefix_mismatch": {},
+   "null_pct": {
+    "admission_location": 0.0,
+    "deathtime": 97.84,
+    "discharge_location": 27.44,
+    "edouttime": 30.55,
+    "edregtime": 30.55,
+    "insurance": 1.71
+   }
+  },
+  "patients": {
+   "rows": 364627,
+   "parquet_mb": 1.4,
+   "seconds": 0,
+   "poe_seq_max": 0,
+   "ptr_prefix_mismatch": {},
+   "null_pct": {}
+  },
+  "transfers": {
+   "rows": 2413581,
+   "parquet_mb": 37.2,
+   "seconds": 18,
+   "poe_seq_max": 0,
+   "ptr_prefix_mismatch": {},
+   "null_pct": {
+    "hadm_id": 16.94,
+    "outtime": 22.63
+   }
+  },
+  "services": {
+   "rows": 593071,
+   "parquet_mb": 6.4,
+   "seconds": 7,
+   "poe_seq_max": 0,
+   "ptr_prefix_mismatch": {},
+   "null_pct": {
+    "prev_service": 91.79
+   }
+  },
+  "poe_detail": {
+   "rows": 8504982,
+   "parquet_mb": 42.8,
+   "seconds": 36,
+   "poe_seq_max": 152694,
+   "ptr_prefix_mismatch": {},
+   "null_pct": {}
+  }
+ },
+ "_env": {
+  "python": "3.11.0",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "cpu_count": 20,
+  "utc": "2026-09-21T11:11:08Z",
+  "numpy": "2.4.6",
+  "pandas": "3.0.6",
+  "pyarrow": "25.0.1",
+  "sklearn": "1.9.1",
+  "lightgbm": "4.7.0",
+  "torch": "2.11.0+cu128",
+  "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "gpu_mem_gb": 6.0,
+  "git": null
+ },
+ "_elapsed_s": 67.5
+}

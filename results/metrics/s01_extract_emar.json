@@ -1,0 +1,35 @@
+{
+ "smoke": false,
+ "tables": {
+  "emar": {
+   "rows": 42808593,
+   "parquet_mb": 304.9,
+   "seconds": 231,
+   "poe_seq_max": 152689,
+   "ptr_prefix_mismatch": {
+    "poe_id": 0
+   },
+   "null_pct": {
+    "event_txt": 1.04,
+    "hadm_id": 3.31,
+    "scheduletime": 0.05
+   }
+  }
+ },
+ "_env": {
+  "python": "3.11.0",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "cpu_count": 20,
+  "utc": "2026-09-21T11:13:54Z",
+  "numpy": "2.4.6",
+  "pandas": "3.0.6",
+  "pyarrow": "25.0.1",
+  "sklearn": "1.9.1",
+  "lightgbm": "4.7.0",
+  "torch": "2.11.0+cu128",
+  "gpu": "NVIDIA GeForce RTX 3060 Laptop GPU",
+  "gpu_mem_gb": 6.0,
+  "git": null
+ },
+ "_elapsed_s": 233.9
+}

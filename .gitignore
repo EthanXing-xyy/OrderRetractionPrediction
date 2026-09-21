@@ -1,0 +1,49 @@
+# ===================================================================
+# 数据红线：MIMIC-IV 是 PhysioNet 凭证数据，DUA 禁止公开再分发。
+# 任何患者级的中间产物一律不进 git。组员请用自己的 PhysioNet 凭证
+# 下载原始 zip，然后本地跑 src/s01_extract.py 重建 data/。
+# ===================================================================
+data/
+*.parquet
+*.csv
+*.csv.gz
+*.zip
+*.feather
+*.arrow
+*.npy
+*.npz
+*.pkl
+*.h5
+
+# 模型权重：在 MIMIC 上训出来的参数属于派生数据，不公开再分发。
+# 文件**保留在工程目录 checkpoints/ 里**（留痕），只是不进 git。
+checkpoints/
+*.pt
+*.pth
+*.ckpt
+*.bin
+*.onnx
+
+# ---- 以下一律进 git，这是「留痕」的要求 ----
+# logs/        每一步的运行日志（脚本只打印聚合量，无患者数据）
+# results/     指标 JSON + 图
+# src/         全部脚本，跑完不删
+# docs/        方案、数据契约、实验记录、相关工作、报告
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+env/
+.ipynb_checkpoints/
+.pytest_cache/
+.mypy_cache/
+*.egg-info/
+
+# 编辑器 / 系统
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
