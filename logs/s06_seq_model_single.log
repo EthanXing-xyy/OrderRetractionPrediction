@@ -22,3 +22,29 @@ train 块 469357（全量 469357）  每 epoch 14668 步
   ep0 step 3000/14668  loss=0.39137  lr=2.98e-04  8.01 step/s  已用 6.2 min
   ep0 step 3200/14668  loss=0.38938  lr=2.97e-04  7.87 step/s  已用 6.8 min
   ep0 step 3400/14668  loss=0.38755  lr=2.97e-04  7.76 step/s  已用 7.3 min
+  ep0 step 3600/14668  loss=0.38773  lr=2.97e-04  7.77 step/s  已用 7.7 min
+  ep0 step 3800/14668  loss=0.38695  lr=2.96e-04  7.73 step/s  已用 8.2 min
+  ep0 step 4000/14668  loss=0.38638  lr=2.96e-04  7.71 step/s  已用 8.6 min
+  ep0 step 4200/14668  loss=0.38525  lr=2.95e-04  7.83 step/s  已用 8.9 min
+  ep0 step 4400/14668  loss=0.38541  lr=2.95e-04  7.94 step/s  已用 9.2 min
+  ep0 step 4600/14668  loss=0.38707  lr=2.94e-04  8.05 step/s  已用 9.5 min
+  ep0 step 4800/14668  loss=0.38456  lr=2.94e-04  8.16 step/s  已用 9.8 min
+  ep0 step 5000/14668  loss=0.38411  lr=2.93e-04  8.28 step/s  已用 10.1 min
+  ep0 step 5200/14668  loss=0.38382  lr=2.92e-04  8.38 step/s  已用 10.3 min
+  ep0 step 5400/14668  loss=0.38440  lr=2.92e-04  8.48 step/s  已用 10.6 min
+  ep0 step 5600/14668  loss=0.38521  lr=2.91e-04  8.58 step/s  已用 10.9 min
+  ep0 step 5800/14668  loss=0.38445  lr=2.90e-04  8.68 step/s  已用 11.1 min
+  ep0 step 6000/14668  loss=0.38497  lr=2.89e-04  8.76 step/s  已用 11.4 min
+  ep0 step 6200/14668  loss=0.38292  lr=2.89e-04  8.85 step/s  已用 11.7 min
+  ep0 step 6400/14668  loss=0.38131  lr=2.88e-04  8.93 step/s  已用 11.9 min
+  ep0 step 6600/14668  loss=0.38385  lr=2.87e-04  9.00 step/s  已用 12.2 min
+  ep0 step 6800/14668  loss=0.38132  lr=2.86e-04  9.08 step/s  已用 12.5 min
+  ep0 step 7000/14668  loss=0.38349  lr=2.85e-04  9.15 step/s  已用 12.8 min
+  ep0 step 7200/14668  loss=0.38153  lr=2.85e-04  9.22 step/s  已用 13.0 min
+  ep0 step 7400/14668  loss=0.38225  lr=2.84e-04  9.28 step/s  已用 13.3 min
+  ep0 step 7600/14668  loss=0.38172  lr=2.83e-04  9.35 step/s  已用 13.6 min
+  ep0 step 7800/14668  loss=0.38025  lr=2.82e-04  9.40 step/s  已用 13.8 min
+  ep0 step 8000/14668  loss=0.38218  lr=2.81e-04  9.46 step/s  已用 14.1 min
+  ep0 step 8200/14668  loss=0.38239  lr=2.80e-04  9.52 step/s  已用 14.4 min
+  ep0 step 8400/14668  loss=0.38198  lr=2.79e-04  9.57 step/s  已用 14.6 min
+  ep0 step 8600/14668  loss=0.38363  lr=2.78e-04  9.62 step/s  已用 14.9 min

@@ -62,6 +62,7 @@ IDX_BITS = 26                      # 52,212,109 < 2**26，够装 poe 行号
 # 协议性的「不给药」，不是决策信号，必须剔除
 PROTOCOL_NOT_GIVEN = ("Not Given per Sliding Scale",
                       "Not Given per Sliding Scale in Other Location")
+SUF = ""          # smoke 跑时置成 "_smoke"，避免与全量产物同名混版
 
 
 def ev_sorted(idx: np.ndarray, t: np.ndarray, mask: np.ndarray | None = None):
@@ -139,6 +140,8 @@ def main():
     ap.add_argument("--smoke", action="store_true")
     a = ap.parse_args()
     taus = [float(x) for x in a.taus.split(",")]
+    global SUF
+    SUF = "_smoke" if a.smoke else ""
 
     t0w, _ = C.start_log("s09_scenario_b" + ("_smoke" if a.smoke else ""))
     import lightgbm as lgb
@@ -277,7 +280,10 @@ def main():
                     m["auprc_self"] = round(E.auprc((cb[te] == 1), pt[:, 1]), 6)
                     m["auprc_other"] = round(E.auprc((cb[te] == 2), pt[:, 2]), 6)
                 res_tau[name] = m
-                np.save(C.DATA / f"pred_{name}.npy", p_disc.astype(np.float32))
+                # ⚠ smoke 与全量必须写到**不同路径**。原先共用一个文件名，
+                #   结果全量跑到一半被掐之后，目录里 2 个是全量的、2 个是 smoke 残留的——
+                #   文件都合法、都能读，但混版且无从分辨。这比直接崩掉危险得多。
+                np.save(C.DATA / f"pred_{name}{SUF}.npy", p_disc.astype(np.float32))
                 print(f"    {name:32s} AUPRC={m['auprc']:.4f} AUROC={m['auroc']:.4f} "
                       f"({m['seconds']}s, {m['best_iter']} 轮)")
                 bst.save_model(str(C.ROOT / "checkpoints" / f"{name}.txt"))
@@ -289,7 +295,7 @@ def main():
         te = alive & (split == 2)
         units = subj[te]
         def ld(n):
-            return np.load(C.DATA / f"pred_{n}.npy")
+            return np.load(C.DATA / f"pred_{n}{SUF}.npy")
         for tag, A, B in (("eMAR的贡献(单头)", f"lgbmB{int(tau)}_single",
                            f"lgbmB{int(tau)}_single_noemar"),
                           ("eMAR的贡献(三分类)", f"lgbmB{int(tau)}_3class",
