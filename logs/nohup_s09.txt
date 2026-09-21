@@ -9,3 +9,66 @@
 [LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
 [LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
 [LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+[LightGBM] [Warning] Met negative value in categorical features, will convert it to NaN
+
+==============================================================================
+[s09_scenario_b] 开始 2026-09-21 22:59:20  python=3.11.0  host-cores=20
+
+======================================================================
+τ = 24.0 h   预测窗口 (24.0, 48.0] h
+    eMAR 42,808,593 行，能连回 poe 的 41,211,672 (96.27%)
+    Administered 27,329,393 / 真·Not Given 2,895,524 （已剔除协议性 922,953） / 延迟 16,587,821
+  landmark 入组 38,423,646（占队列 73.7%），窗口内被撤 1,628,688（4.24%）；其中自撤 444700 他撤 1168246
+  『曾被 Not Given』对自撤占比的影响（方案里的反向效应）：
+    ADT orders         Δ=None pp  (有 0 / 无 918583)
+    Blood Bank         Δ=None pp  (有 0 / 无 591401)
+    Cardiology         Δ=None pp  (有 0 / 无 344599)
+    Consults           Δ=None pp  (有 0 / 无 641447)
+    Critical Care      Δ=None pp  (有 0 / 无 57978)
+    General Care       Δ=None pp  (有 0 / 无 5603475)
+  训练 7,636,849 / 验证 3,893,556 / 测试 3,811,724 行（矩阵只建这 15,342,129 行）
+    lgbmB24_single_noemar            AUPRC=0.3711 AUROC=0.8635 (71s, 205 轮)
+    lgbmB24_3class_noemar            AUPRC=0.3694 AUROC=0.8613 (137s, 101 轮)
+    lgbmB24_single                   AUPRC=0.3925 AUROC=0.8793 (60s, 144 轮)
+    lgbmB24_3class                   AUPRC=0.3904 AUROC=0.8770 (183s, 125 轮)
+    Δ eMAR的贡献(单头)            = +0.0214  95%CI[+0.0204,+0.0224]  (有效重抽 1000/1000)
+    Δ eMAR的贡献(三分类)           = +0.0210  95%CI[+0.0200,+0.0218]  (有效重抽 1000/1000)
+    Δ 分头vs单头(有eMAR)          = -0.0021  95%CI[-0.0029,-0.0014]  (有效重抽 1000/1000)
+    Δ 分头vs单头(无eMAR)          = -0.0017  95%CI[-0.0024,-0.0010]  (有效重抽 1000/1000)
+→ 指标已写 results\metrics\s09_scenario_b.json
+
+总耗时 782s

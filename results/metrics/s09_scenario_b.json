@@ -1,0 +1,253 @@
+{
+ "taus": [
+  24.0
+ ],
+ "horizon_h": 24.0,
+ "smoke": false,
+ "protocol_not_given_excluded": [
+  "Not Given per Sliding Scale",
+  "Not Given per Sliding Scale in Other Location"
+ ],
+ "per_tau": {
+  "24.0": {
+   "NotGiven对自撤占比的影响": {
+    "ADT orders": {
+     "n_有NotGiven": 0,
+     "自撤占比pct": null,
+     "n_无NotGiven": 918583,
+     "对照自撤占比pct": 18.68,
+     "Δpp": null
+    },
+    "Blood Bank": {
+     "n_有NotGiven": 0,
+     "自撤占比pct": null,
+     "n_无NotGiven": 591401,
+     "对照自撤占比pct": 28.97,
+     "Δpp": null
+    },
+    "Cardiology": {
+     "n_有NotGiven": 0,
+     "自撤占比pct": null,
+     "n_无NotGiven": 344599,
+     "对照自撤占比pct": 32.04,
+     "Δpp": null
+    },
+    "Consults": {
+     "n_有NotGiven": 0,
+     "自撤占比pct": null,
+     "n_无NotGiven": 641447,
+     "对照自撤占比pct": 49.79,
+     "Δpp": null
+    },
+    "Critical Care": {
+     "n_有NotGiven": 0,
+     "自撤占比pct": null,
+     "n_无NotGiven": 57978,
+     "对照自撤占比pct": 13.6,
+     "Δpp": null
+    },
+    "General Care": {
+     "n_有NotGiven": 0,
+     "自撤占比pct": null,
+     "n_无NotGiven": 5603475,
+     "对照自撤占比pct": 32.91,
+     "Δpp": null
+    },
+    "Hemodialysis": {
+     "n_有NotGiven": 0,
+     "自撤占比pct": null,
+     "n_无NotGiven": 42988,
+     "对照自撤占比pct": 61.54,
+     "Δpp": null
+    },
+    "IV therapy": {
+     "n_有NotGiven": 3066,
+     "自撤占比pct": 9.62,
+     "n_无NotGiven": 2092463,
+     "对照自撤占比pct": 22.55,
+     "Δpp": -12.93
+    },
+    "Lab": {
+     "n_有NotGiven": 0,
+     "自撤占比pct": null,
+     "n_无NotGiven": 7282930,
+     "对照自撤占比pct": 31.37,
+     "Δpp": null
+    },
+    "Medications": {
+     "n_有NotGiven": 571731,
+     "自撤占比pct": 26.67,
+     "n_无NotGiven": 16931650,
+     "对照自撤占比pct": 24.85,
+     "Δpp": 1.82
+    },
+    "Neurology": {
+     "n_有NotGiven": 0,
+     "自撤占比pct": null,
+     "n_无NotGiven": 30818,
+     "对照自撤占比pct": 26.88,
+     "Δpp": null
+    },
+    "Nutrition": {
+     "n_有NotGiven": 0,
+     "自撤占比pct": null,
+     "n_无NotGiven": 1310946,
+     "对照自撤占比pct": 30.3,
+     "Δpp": null
+    },
+    "OB": {
+     "n_有NotGiven": 0,
+     "自撤占比pct": null,
+     "n_无NotGiven": 30222,
+     "对照自撤占比pct": 21.81,
+     "Δpp": null
+    },
+    "Radiology": {
+     "n_有NotGiven": 0,
+     "自撤占比pct": null,
+     "n_无NotGiven": 1536424,
+     "对照自撤占比pct": 38.95,
+     "Δpp": null
+    },
+    "Respiratory": {
+     "n_有NotGiven": 0,
+     "自撤占比pct": null,
+     "n_无NotGiven": 361798,
+     "对照自撤占比pct": 11.83,
+     "Δpp": null
+    },
+    "TPN": {
+     "n_有NotGiven": "<10",
+     "自撤占比pct": null,
+     "n_无NotGiven": 71126,
+     "对照自撤占比pct": 40.34,
+     "Δpp": null
+    }
+   },
+   "n_train": 7636849,
+   "n_test": 3811724,
+   "lgbmB24_single_noemar": {
+    "n_train": 7636849,
+    "n_test": 3811724,
+    "best_iter": 205,
+    "seconds": 71,
+    "auprc": 0.371103,
+    "auroc": 0.86348,
+    "brier": 0.031943
+   },
+   "lgbmB24_3class_noemar": {
+    "n_train": 7636849,
+    "n_test": 3811724,
+    "best_iter": 101,
+    "seconds": 137,
+    "auprc": 0.369398,
+    "auroc": 0.861305,
+    "brier": 0.032003,
+    "auprc_self": 0.23196,
+    "auprc_other": 0.255703
+   },
+   "lgbmB24_single": {
+    "n_train": 7636849,
+    "n_test": 3811724,
+    "best_iter": 144,
+    "seconds": 60,
+    "auprc": 0.392509,
+    "auroc": 0.879263,
+    "brier": 0.031392
+   },
+   "lgbmB24_3class": {
+    "n_train": 7636849,
+    "n_test": 3811724,
+    "best_iter": 125,
+    "seconds": 183,
+    "auprc": 0.390376,
+    "auroc": 0.877024,
+    "brier": 0.031459,
+    "auprc_self": 0.239002,
+    "auprc_other": 0.272627
+   },
+   "Δ_eMAR的贡献(单头)": {
+    "delta": 0.021406,
+    "ci_lo": 0.020419,
+    "ci_hi": 0.022371,
+    "p_boot": 0.001,
+    "n_boot": 1000,
+    "n_boot_requested": 1000,
+    "n_subjects": 19124,
+    "n_rows": 3811724,
+    "metric": "auprc",
+    "bootstrap_unit": "subject_id",
+    "value_a": 0.392509,
+    "value_b": 0.371103,
+    "boot_sd": 0.000482,
+    "n_boot_nonfinite": 0,
+    "elapsed_s": 57.7
+   },
+   "Δ_eMAR的贡献(三分类)": {
+    "delta": 0.020978,
+    "ci_lo": 0.020008,
+    "ci_hi": 0.021844,
+    "p_boot": 0.001,
+    "n_boot": 1000,
+    "n_boot_requested": 1000,
+    "n_subjects": 19124,
+    "n_rows": 3811724,
+    "metric": "auprc",
+    "bootstrap_unit": "subject_id",
+    "value_a": 0.390376,
+    "value_b": 0.369398,
+    "boot_sd": 0.000463,
+    "n_boot_nonfinite": 0,
+    "elapsed_s": 56.0
+   },
+   "Δ_分头vs单头(有eMAR)": {
+    "delta": -0.002133,
+    "ci_lo": -0.002858,
+    "ci_hi": -0.001403,
+    "p_boot": 0.001,
+    "n_boot": 1000,
+    "n_boot_requested": 1000,
+    "n_subjects": 19124,
+    "n_rows": 3811724,
+    "metric": "auprc",
+    "bootstrap_unit": "subject_id",
+    "value_a": 0.390376,
+    "value_b": 0.392509,
+    "boot_sd": 0.00036,
+    "n_boot_nonfinite": 0,
+    "elapsed_s": 56.2
+   },
+   "Δ_分头vs单头(无eMAR)": {
+    "delta": -0.001705,
+    "ci_lo": -0.002422,
+    "ci_hi": -0.000971,
+    "p_boot": 0.001,
+    "n_boot": 1000,
+    "n_boot_requested": 1000,
+    "n_subjects": 19124,
+    "n_rows": 3811724,
+    "metric": "auprc",
+    "bootstrap_unit": "subject_id",
+    "value_a": 0.369398,
+    "value_b": 0.371103,
+    "boot_sd": 0.000377,
+    "n_boot_nonfinite": 0,
+    "elapsed_s": 54.4
+   }
+  }
+ },
+ "_env": {
+  "python": "3.11.0",
+  "platform": "Windows-10-10.0.26200-SP0",
+  "cpu_count": 20,
+  "utc": "2026-09-21T15:12:16Z",
+  "numpy": "2.4.6",
+  "pandas": "3.0.6",
+  "pyarrow": "25.0.1",
+  "sklearn": "1.9.1",
+  "lightgbm": "4.7.0",
+  "torch": "2.11.0+cu128",
+  "git": "b5ec80a"
+ },
+ "_elapsed_s": 782.2
+}

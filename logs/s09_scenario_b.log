@@ -34,3 +34,14 @@
     Critical Care      Δ=None pp  (有 0 / 无 57978)
     General Care       Δ=None pp  (有 0 / 无 5603475)
   训练 7,636,849 / 验证 3,893,556 / 测试 3,811,724 行（矩阵只建这 15,342,129 行）
+    lgbmB24_single_noemar            AUPRC=0.3711 AUROC=0.8635 (71s, 205 轮)
+    lgbmB24_3class_noemar            AUPRC=0.3694 AUROC=0.8613 (137s, 101 轮)
+    lgbmB24_single                   AUPRC=0.3925 AUROC=0.8793 (60s, 144 轮)
+    lgbmB24_3class                   AUPRC=0.3904 AUROC=0.8770 (183s, 125 轮)
+    Δ eMAR的贡献(单头)            = +0.0214  95%CI[+0.0204,+0.0224]  (有效重抽 1000/1000)
+    Δ eMAR的贡献(三分类)           = +0.0210  95%CI[+0.0200,+0.0218]  (有效重抽 1000/1000)
+    Δ 分头vs单头(有eMAR)          = -0.0021  95%CI[-0.0029,-0.0014]  (有效重抽 1000/1000)
+    Δ 分头vs单头(无eMAR)          = -0.0017  95%CI[-0.0024,-0.0010]  (有效重抽 1000/1000)
+→ 指标已写 results\metrics\s09_scenario_b.json
+
+总耗时 782s
